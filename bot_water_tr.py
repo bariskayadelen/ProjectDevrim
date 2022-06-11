@@ -1,0 +1,1 @@
+# Web sayfasından otomatik su fiyatlarını alan script

@@ -1,0 +1,1 @@
+# Web sayfasından otomatik akaryakıt fiyatlarını alan script
