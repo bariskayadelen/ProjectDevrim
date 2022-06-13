@@ -61,6 +61,7 @@ def ElectricityTr_show():
         print(f" [{i[0]}]\t{i[1]}\t\t{i[2]} - {i[3]} - {i[4]}")
     con.close()
 
+# Eksik tamamla !!!
 def ElectricityTr_add():
     print(f"\n{' Project Devrim DB Manager ':=^{tbl_len_out}}")
     inp_SubscriptionID = input("")
