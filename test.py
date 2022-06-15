@@ -1,53 +1,160 @@
-# Web sayfasından otomatik akaryakıt fiyatlarını alan script
+# hiz hesaplayicisi
+from os import system, name
+from time import sleep
 
-import datetime
-import urllib.request
-from bs4 import BeautifulSoup as soup
-import sqlite3
+# Define clear function
+def clear():
+    # for windows
+    if name == 'nt':
+        _ = system('cls')
+    # for mac and linux(here, os.name is 'posix')
+    else:
+        _ = system('clear')
 
-# def FuelTr_show():
-#     con = sqlite3.connect("unitprices.db")
-#     cursor = con.cursor()
-#     cursor.execute("CREATE TABLE IF NOT EXISTS FuelTr(Date TEXT,CompanyName TEXT,GasPrice REAL,Diesel REAL,LPG REAL)")
-#     con.commit()
-#     cursor.execute("SELECT * FROM FuelTr")
-#     data = cursor.fetchall()
-#     print(f"\n Tarih  \tŞirket  \tBenzin Fiyatı\tDizel Fiyatı\tLPG Fiyatı")
-#     for i in data:
-#         print(f" {i[0]}\t{i[1]}\t{i[2]}\t\t{i[3]}\t\t{i[4]}")
-#     con.close()
+def f_time(dist,speed):
+    if (dist / speed) < 1:
+        minute = round((dist/speed) * 60)
+        return (f"{dist} km yolu {speed} km/h hızla {minute} dakikada gidersiniz.")
+    elif (dist % speed) == 0 and (dist / speed) < 24:
+        hour = int(dist / speed)
+        return (f"{dist} km yolu {speed} km/h hızla {hour} saatte gidersiniz.")
+    elif (dist % speed) == 0 and (dist / speed) >= 24:
+        day = int(int(dist / speed) / 24)
+        hour = (int(dist / speed) - (day*24))
+        return (f"{dist} km yolu {speed} km/h hızla {day} gün {hour} saatte gidersiniz.")
+    elif (dist / speed) >= 24:
+        day = int(int(dist / speed) / 24)
+        hour = (int(dist / speed) - (day*24))
+        minute = round(((dist / speed) - (day*24) - hour) * 60)
+        return (f"{dist} km yolu {speed} km/h hızla {day} gün {hour} saat {minute} dakikada gidersiniz.")
+    else:
+        hour = int(dist / speed)
+        minute = round(((dist / speed)-hour) * 60)
+        return (f"{dist} km yolu {speed} km/h hızla {hour} saat {minute} dakikada gidersiniz.")
 
-def FuelTr_update(date,comp,fuel,diesel,lpg):
-    con = sqlite3.connect("unitprices.db")
-    cursor = con.cursor()
-    cursor.execute("CREATE TABLE IF NOT EXISTS FuelTr(Date TEXT,CompanyName TEXT,GasPrice REAL,Diesel REAL,LPG REAL)")
-    con.commit()
-    cursor.execute("SELECT * FROM FuelTr")
-    data = cursor.fetchall()
-    for i in data:
-        if i[0] == today:
-            print ("Bugun veri girisi yapilmis.")
+def f_speed(dist,time):
+    speed = round(dist / time)
+    return (f"{dist} km yolu {time} saat {time} dakikada gidersiniz ortalam hiziniz {speed} km/h'dir.")
+
+def f_distance(speed,time):
+    dist = speed * time
+    return (f"{speed} km/h hızla {time} saatte {dist} km yol gidersiniz.")
+
+def menu_bottom():
+    while True:
+        inp = input(f"\n [A] Ana menüye dön | [Q] Programdan Çık | Tercih: ")
+        if inp.lower() == "q":
+            print(f"\n{' İyi Günler ':=^{tbl_len_out}}\n")
+            return "break"
+        elif inp.lower() == "a":
+            return "continue"
         else:
-            # print(f" {date}\t{comp}\t{fuel}\t\t{diesel}\t\t{lpg}")
-            # cursor.execute("INSERT INTO FuelTr (Date,CompanyName,GasPrice,Diesel,LPG) VALUES(date,comp,fuel,diesel,lpg)")
-            insert_with_param = """INSERT INTO FuelTr (Date,CompanyName,GasPrice,Diesel,LPG) VALUES (?, ?, ?, ?, ?);"""
-            data_tuple = (date,comp,fuel,diesel,lpg)
-            cursor.execute(insert_with_param, data_tuple)
-            con.commit()
-    con.close()
+            clear()
+            print(f"\n{' Hız/Mesafe/Zaman Hesaplama Programı ':=^{tbl_len_out}}")
+            # print(f"\n{'':-^{tbl_len_out}}")
+            print(f"\n Hata!!! Girmiş olduğunuz {inp} değeri menüde mevcut değildir.")
+            print(f"\n Lütfen menü seçeneğini doğru giriniz!")
+        continue
 
-today = datetime.date.today()
-url = "https://www.aytemiz.com.tr/"
-company = "Aytemiz Petrol"
+def check_speed(inp):
+    while True:
+        try:
+            result = float(inp)
+            return result
+        except:
+            clear()
+            print(f"\n{' Hız/Mesafe/Zaman Hesaplama Programı ':=^{tbl_len_out}}")
+            print(f"\n Hata!!! Girmiş olduğunuz {inp} değeri sayisal bir değer değildir.")
+            print("\n Lütfen sayısal bir değer giriniz.")
+            inp = input(f"\n{' Ortalama hızınızı km/h olarak giriniz':{tbl_len_in}}: ") 
+            continue
 
-req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'})
-uClient = urllib.request.urlopen(req)
-page_html = uClient.read()
-uClient.close()
+def check_time(inp):
+    while True:
+        try:
+            result = float(inp)
+            return result
+        except:
+            print(f"\n{' Hız/Mesafe/Zaman Hesaplama Programı ':=^{tbl_len_out}}")
+            print(f"\n Hata!!! Girmiş olduğunuz {inp} değeri sayisal bir değer değildir.")
+            print("\n Lütfen sayısal bir değer giriniz.")
+            continue
+        
+def check_dist(inp):
+    while True:
+        try:
+            result = float(inp)
+            return result
+        except:
+            clear()
+            print(f"\n{' Hız/Mesafe/Zaman Hesaplama Programı ':=^{tbl_len_out}}")
+            print(f"\n Hata!!! Girmiş olduğunuz {inp} değeri sayisal bir değer değildir.")
+            print("\n Lütfen sayısal bir değer giriniz.")
+            inp = input(f"\n{' Mesafeyi km olarak giriniz':{tbl_len_in}}: ") 
+            continue
 
-page_soup = soup(page_html.decode('utf-8','ignore').encode("utf-8"), 'html5lib')
-fuel_price = page_soup.find_all('div', {"class":"fuel-price"})[0].text.strip().strip('TL/LT')
-diesel_price = page_soup.find_all('div', {"class":"fuel-price"})[1].text.strip().strip('TL/LT')
-lpg_price = page_soup.find_all('div', {"class":"fuel-price"})[3].text.strip().strip('TL/LT')
+tbl_len_out = 78
+tbl_len_in = 40
 
-FuelTr_update(today,company,fuel_price,diesel_price,lpg_price)
+while True:
+    clear()
+    print(f"\n{' Hız/Mesafe/Zaman Hesaplama Programı ':=^{tbl_len_out}}")
+    print(f"\n Lütfen yapmak istediğiniz işlemi menüden seçiniz.")
+    print(f"\n [1] Hız Hesapla ")
+    print(f" [2] Mesafe Hesapla")
+    print(f" [3] Zaman Hesapla")
+    print(f"\n [Q] Programdan Çık")
+    inp_choice = input("\nTercih : ")
+
+    if inp_choice.lower() == "q":
+        print(f"\n{' İyi Günler ':=^{tbl_len_out}}\n")
+        break
+
+    # Speed Calc
+    elif inp_choice == "1":
+        clear()
+        print(f"\n{' Hız/Mesafe/Zaman Hesaplama Programı ':=^{tbl_len_out}}")
+        mesafe = check_dist(input(f"\n{' Mesafeyi km olarak giriniz':{tbl_len_in}}: ") )
+        zaman = check_time(input(f"\n{' Zamanı saat:dakika olarak giriniz':{tbl_len_in}}: "))
+        clear()
+        print(f"\n{' Hız/Mesafe/Zaman Hesaplama Programı ':=^{tbl_len_out}}")
+        print("\n",f_speed(mesafe,zaman))
+        print(f"\n{'':-^{tbl_len_out}}")
+        if menu_bottom() == "break": break
+
+    # Distance Calc
+    elif inp_choice == "2":
+        clear()
+        print(f"\n{' Hız/Mesafe/Zaman Hesaplama Programı ':=^{tbl_len_out}}")
+        hiz = check_speed(input(f"\n{' Ortalama hızınızı km/h olarak giriniz':{tbl_len_in}}: "))
+        inp_zaman = input(f"\n{' Zamanı saat:dakika olarak giriniz':{tbl_len_in}}: ")
+        try:
+            zaman = float(inp_zaman)
+        except:
+            print("Lütfen sayısal bir değer giriniz.\n")
+            exit()
+        clear()
+        print(f"\n{' Hız/Mesafe/Zaman Hesaplama Programı ':=^{tbl_len_out}}")
+        print("\n",f_distance(hiz,zaman))
+        print(f"\n{'':-^{tbl_len_out}}")
+        if menu_bottom() == "break": break
+
+    # Time Calc
+    elif inp_choice == "3":
+        clear()
+        print(f"\n{' Hız/Mesafe/Zaman Hesaplama Programı ':=^{tbl_len_out}}")
+        hiz = check_speed(input(f"\n{' Ortalama hızınızı km/h olarak giriniz':{tbl_len_in}}: "))
+        mesafe = check_dist(input(f"\n{' Mesafeyi km olarak giriniz':{tbl_len_in}}: "))
+        clear()
+        print(f"\n{' Hız/Mesafe/Zaman Hesaplama Programı ':=^{tbl_len_out}}")
+        print("\n",f_time(mesafe,hiz))
+        print(f"\n{'':-^{tbl_len_out}}")
+        if menu_bottom() == "break": break
+
+    else:
+        clear()
+        print(f"\n{' Hız/Mesafe/Zaman Hesaplama Programı ':=^{tbl_len_out}}")
+        print(f"\n Hata!!! Girmiş olduğunuz {inp_choice} değeri menüde mevcut değildir.")
+        print(f"\n Lütfen menü seçeneğini doğru giriniz!")
+        if menu_bottom() == "break": break
+    continue

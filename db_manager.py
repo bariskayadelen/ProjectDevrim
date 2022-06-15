@@ -24,9 +24,10 @@ def menu_main():
     # print(f" [41] Elektrik fiyat bilgisini sil\n")
     print(f" [21] Su fiyat bilgisini göster")
     # print(f" [22] Su fiyat bilgisini güncelle\n")
-    print(f" [31] Akaryakıt fiyat bilgisini göster")
-    # print(f" [32] Akaryakıt fiyat bilgisini güncelle\n")    
-    print(f" [41] Tüm araçların bilgisini göster")
+    print(f"\n [31] Güncel akaryakıt fiyat bilgisini göster")
+    print(f" [32] Tüm akaryakıt fiyat bilgisini göster")
+    # print(f" [32] Akaryakıt fiyat bilgisini güncelle\n")
+    print(f"\n [41] Tüm araçların bilgisini göster")
     # print(f" [42] Araç bilgisini güncelle")
 
 def menu_bottom():
@@ -67,17 +68,28 @@ def ElectricityTr_add():
     inp_SubscriptionID = input("")
     pass
 
-def FuelTr_show():
-    print(f"\n{' Project Devrim DB Manager ':=^{tbl_len_out}}")
+def FuelTr_show_now():
+    print(f"\n{' Project Devrim ':=^{tbl_len_out}}")
     print(f"\n Güncel akaryakıt fiyat bilgisi aşağıdadır.")
     con = sqlite3.connect("unitprices.db")
     cursor = con.cursor()
-    cursor.execute("CREATE TABLE IF NOT EXISTS FuelTr(Date TEXT,CompanyName TEXT,GasPrice REAL,Diesel REAL,LPG REAL)")
-    con.commit()
+    cursor.execute("SELECT * FROM FuelTr ORDER BY Date DESC LIMIT 1")
+    data = cursor.fetchall()
+    print(f"\n Tarih  \tŞirket  \tBenzin Fiyatı\tDizel Fiyatı\tLPG Fiyatı")
+    print(f" {'':-^{13}}  {'':-^{13}}   {'':-^{13}}   {'':-^{13}}   {'':-^{13}}")
+    for i in data:
+        print(f" {i[0]}\t{i[1]}\t{i[2]}\t\t{i[3]}\t\t{i[4]}")
+    con.close()
+
+def FuelTr_show_all():
+    print(f"\n{' Project Devrim ':=^{tbl_len_out}}")
+    print(f"\n Güncel akaryakıt fiyat bilgisi aşağıdadır.")
+    con = sqlite3.connect("unitprices.db")
+    cursor = con.cursor()
     cursor.execute("SELECT * FROM FuelTr")
     data = cursor.fetchall()
     print(f"\n Tarih  \tŞirket  \tBenzin Fiyatı\tDizel Fiyatı\tLPG Fiyatı")
-    print(f" {'':-^{tbl_len_5c}}  {'':-^{tbl_len_5c}}   {'':-^{tbl_len_5c}}   {'':-^{tbl_len_5c}}   {'':-^{tbl_len_5c}}")
+    print(f" {'':-^{13}}  {'':-^{13}}   {'':-^{13}}   {'':-^{13}}   {'':-^{13}}")
     for i in data:
         print(f" {i[0]}\t{i[1]}\t{i[2]}\t\t{i[3]}\t\t{i[4]}")
     con.close()
@@ -147,13 +159,13 @@ while True:
 
     elif inp_mainmenu == "31":
         clear()
-        FuelTr_show()
+        FuelTr_show_now()
         if menu_bottom() == "break": break
 
-    # elif inp_mainmenu == "32":
-    #     clear()
-    #     under_construction()
-    #     if menu_bottom() == "break": break
+    elif inp_mainmenu == "32":
+        clear()
+        FuelTr_show_all()
+        if menu_bottom() == "break": break
 
     elif inp_mainmenu == "41":
         clear()
