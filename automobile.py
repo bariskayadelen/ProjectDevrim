@@ -1,6 +1,4 @@
 # Import system and name from os for clear function
-from asyncio.proactor_events import _ProactorBaseWritePipeTransport
-from operator import eq
 from os import system, name
 from time import sleep
 import sqlite3
