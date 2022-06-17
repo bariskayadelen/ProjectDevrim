@@ -17,11 +17,16 @@ tbl_len_out = 78
 tbl_len_in = 38
 tbl_len_car = 30
 
+def menu_title():
+    return (f"\n{' Araç Enerji Tüketimi Hesaplama Programı ':=^{tbl_len_out}}")
+
 def menu_main():
-    print(f"\n{' Araç Enerji Tüketimi Hesaplama Programı ':=^{tbl_len_out}}")
+    # print(f"\n{' Araç Enerji Tüketimi Hesaplama Programı ':=^{tbl_len_out}}")
+    print(menu_title())
     print(f"\nLütfen yapmak istediğiniz işlemi aşağıdaki menüden seçiniz:\n")
-    print(f" [11] Araç şarj maliyeti hesapla")
-    print(f" [12] Araç tüketim bilgisi hesapla")
+    print(f" [11] Elektrikli araç şarj maliyeti hesapla")
+    print(f" [12] Hibrit araç şarj/depo dolum maliyeti hesapla")
+    print(f" [13] Benzinli/Dizel araç depo dolum maliyeti hesapla")
     print(f"\n [21] Araç bilgisi göster")
     print(f" [22] Tüm araçların bilgisini göster")
     print(f"\n [31] Güncel akaryakıt fiyatlarını göster")
@@ -39,15 +44,21 @@ def menu_bottom():
     else:
         last_exit(inp)
 
+def menu_error(inp):
+    # print(f"\n{' Araç Enerji Tüketimi Hesaplama Programı ':=^{tbl_len_out}}")
+    # menu_main()
+    print(f"\n Hata!!! Girmiş olduğunuz '{inp}' değeri menüde mevcut değildir.")
+    print(f" Lütfen menü seçeneğini doğru giriniz!")
+
 def last_exit(inp):
-    print(f"\n{' Project Devrim ':=^{tbl_len_out}}")
-    print(f"\n Hata!!! Girmiş olduğunuz {inp} değeri menüde mevcut değildir.")
+    print(f"\n{' Araç Enerji Tüketimi Hesaplama Programı ':=^{tbl_len_out}}")
+    print(f"\n Hata!!! Girmiş olduğunuz '{inp}' değeri menüde mevcut değildir.")
     print(f"\n Lütfen menü seçeneğini doğru giriniz!")
     print(f"\n Uyarı: 5 sn sonra ana menüye döneceksiniz.")
     sleep(5)
 
 def ElectricityTr_show():
-    print(f"\n{' Project Devrim ':=^{tbl_len_out}}")
+    print(f"\n{' Araç Enerji Tüketimi Hesaplama Programı ':=^{tbl_len_out}}")
     print(f"\n Güncel elektrik fiyatları aşağıdadır.")
     con = sqlite3.connect("unitprices.db")
     cursor = con.cursor()
@@ -66,16 +77,30 @@ def menu_ElectricityTr():
     cursor = con.cursor()
     cursor.execute("SELECT * FROM ElectricityTr")
     data = cursor.fetchall()
+    print(f"\n ID\tAbone Grubu\tTarife")
+    print(f" {'':-^{5}}  {'':-^{14}}  {'':-^{30}}")
+    for i in data:
+        print(f" {i[0]}\t{i[1]}\t\t{i[2]}")
     con.close()
-    return data[0] 
 
-def ElectricityTr_finder(inp_id):
-    con = sqlite3.connect("unitprices.db")
-    cursor = con.cursor()
-    cursor.execute("SELECT * FROM ElectricityTr WHERE SubscriptionID=?", (inp_id,))
-    data = cursor.fetchall()
-    con.close()
-    return data[0] 
+def ElectricityTr_finder(inp):
+    while True:
+        try:
+            inp_id = float(inp)
+            con = sqlite3.connect("unitprices.db")
+            cursor = con.cursor()
+            cursor.execute("SELECT * FROM ElectricityTr WHERE SubscriptionID=?", (inp_id,))
+            data = cursor.fetchall()
+            con.close()
+            return data[0]
+        except:
+            clear()
+            print(f"\n{' Araç Enerji Tüketimi Hesaplama Programı ':=^{tbl_len_out}}")
+            menu_ElectricityTr()
+            print(f"\n Hata!!! Girmiş olduğunuz '{inp}' değeri menüde mevcut değildir.")
+            print(f"\n Lütfen menü seçeneğini doğru giriniz!")
+            inp = input(f"\n Şarj maliyetini hesaplamak istediğiniz aracın kodunu giriniz: ")
+            continue
 
 def ElectricityTr_cost(power,elec_price,dist_price):
     active_energy_cost = power * elec_price
@@ -88,7 +113,7 @@ def ElectricityTr_cost(power,elec_price,dist_price):
     return total
 
 def FuelTr_show_now():
-    print(f"\n{' Project Devrim ':=^{tbl_len_out}}")
+    print(f"\n{' Araç Enerji Tüketimi Hesaplama Programı ':=^{tbl_len_out}}")
     print(f"\n Güncel akaryakıt fiyatları aşağıdadır.")
     con = sqlite3.connect("unitprices.db")
     cursor = con.cursor()
@@ -101,7 +126,7 @@ def FuelTr_show_now():
     con.close()
 
 def FuelTr_show_all():
-    print(f"\n{' Project Devrim ':=^{tbl_len_out}}")
+    print(f"\n{' Araç Enerji Tüketimi Hesaplama Programı ':=^{tbl_len_out}}")
     print(f"\n Geçmiş akaryakıt fiyatları aşağıdadır.")
     con = sqlite3.connect("unitprices.db")
     cursor = con.cursor()
@@ -115,7 +140,7 @@ def FuelTr_show_all():
 
 def car_show():
     # https://ev-database.org/
-    print(f"\n{' Project Devrim ':=^{tbl_len_out}}")
+    print(f"\n{' Araç Enerji Tüketimi Hesaplama Programı ':=^{tbl_len_out}}")
     print(f"\n Tüm araçlara ait bilgiler aşağıdadır.")
     con = sqlite3.connect("car.db")
     cursor = con.cursor()
@@ -138,17 +163,27 @@ def car_finder(carid):
     cursor.execute("SELECT * FROM ElectricCar WHERE CarID=?", (carid,))
     data = cursor.fetchall()
     con.close()
-    return data[0]    
+    return data[0]
+
+def menu_car_electric():
+    con = sqlite3.connect("car.db")
+    cursor = con.cursor()
+    cursor.execute("SELECT * FROM ElectricCar")
+    data = cursor.fetchall()
+    print(f"\n ID\tMarka\t\tModel")
+    print(f" {'':-^{5}}  {'':-^{14}}  {'':-^{30}}")
+    for i in data:
+        print(f" {i[0]}\t{i[1]}\t\t{i[2]}")
+    con.close()
 
 def under_construction():
-    print(f"\n{' Project Devrim DB Manager ':=^{tbl_len_out}}")
+    print(f"\n{' Araç Enerji Tüketimi Hesaplama Programı ':=^{tbl_len_out}}")
     print(f"\n Bu modül yapım aşamasındadır.")
 
 while True:
     clear()
     menu_main()
-    # inp_mainmenu = input(f"\n{' [Q] Programdan Çık ':{tbl_len_in}}  {'  ':{tbl_len_in}} \n\nSeçenek: ")
-    inp_mainmenu = None
+    # inp_mainmenu = None
     inp_mainmenu = input(f"\n[Q] Programdan Çık | Tercih: ")
     if inp_mainmenu.lower() == "q":
         print(f"\n{' İyi Günler ':=^{tbl_len_out}}\n")
@@ -156,13 +191,18 @@ while True:
     elif inp_mainmenu == "11":
         clear()
         print(f"\n{' Araç Enerji Tüketimi Hesaplama Programı ':=^{tbl_len_out}}")
-        inp_menu1 = input(f"\n Şarj maliyetini hesaplamak istediğiniz aracın kodunu giriniz: ")
+        menu_car_electric()
+        inp_menu1 = input(f"\n Şarj maliyetini hesaplamak istediğiniz aracın ID kodunu giriniz: ")
         car_data = car_finder(inp_menu1)
-        # inp_menu2 = (f"\n Elektrik tarifenizi giriniz: ")
-        inp_menu2 = input(f"\n Elektrik tarifenizi giriniz: ")
+        clear()
+        print(f"\n{' Araç Enerji Tüketimi Hesaplama Programı ':=^{tbl_len_out}}")
+        menu_ElectricityTr()
+        inp_menu2 = input(f"\n Şarj maliyetini hesaplamak istediğiniz elektrik tarifenizi giriniz: ")
         electricity_data = ElectricityTr_finder(inp_menu2)
         cost_charge100 = round(ElectricityTr_cost(car_data[6],electricity_data[3],electricity_data[4]),2)
         cost_charge2080 = round(cost_charge100 * 0.6, 2)
+        clear()
+        print(f"\n{' Araç Enerji Tüketimi Hesaplama Programı ':=^{tbl_len_out}}")
         print(f"\n {'Marka':{tbl_len_car}}: {car_data[1]}")
         print(f" {'Model':{tbl_len_car}}: {car_data[2]}")
         print(f" {'Motor':{tbl_len_car}}: {car_data[3]}")
@@ -172,12 +212,20 @@ while True:
         print(f"\n {'Elektrik Tarifesi':{tbl_len_car}}: {electricity_data[1]} - {electricity_data[2]}")
         print(f"\n {'Tam Şarj Ücreti':{tbl_len_car}}: {cost_charge100} ₺")
         print(f" {'%20-%80 Şarj Ücreti':{tbl_len_car}}: {cost_charge2080} ₺")
+        print(f"\n {'23°C Hava Sıcaklığında':{tbl_len_car}}  Menzil\t\tKm Maliyeti")
+        print(f" {'':-^{tbl_len_car}}  {'':-^{13}}  {'':-^{13}}")
+        print(f" {'Kullanıcı Menzili Şehiriçi':{tbl_len_car}}: {car_data[10]}km\t{round(cost_charge100/car_data[10],2)} ₺")
+        print(f" {'Kullanıcı Menzili Şehirdışı':{tbl_len_car}}: {car_data[11]}km\t{round(cost_charge100/car_data[11],2)} ₺")
+        print(f" {'Kullanıcı Menzili Karma':{tbl_len_car}}: {car_data[12]}km\t{round(cost_charge100/car_data[12],2)} ₺")
+        # print(f" {'Fabrika Menzili Şehiriçi':{tbl_len_car}}: {car_data[7]}km\t{round(cost_charge100/car_data[7],2)} ₺")
+        # print(f" {'Fabrika Menzili Şehirdışı':{tbl_len_car}}: {car_data[8]}km\t{round(cost_charge100/car_data[8],2)} ₺")
+        # print(f" {'Fabrika Menzili Karma':{tbl_len_car}}: {car_data[9]}km\t{round(cost_charge100/car_data[9],2)} ₺")
         print(f"\n{'':-^{tbl_len_out}}")
         inp_menu3 = input(f"\n [A] Ana menüye dön | [Q] Programdan Çık | Tercih: ")
         if inp_menu3.lower() == "q":
             print(f"\n{' İyi Günler ':=^{tbl_len_out}}\n")
             break
-        elif inp_menu3 == "A":
+        elif inp_menu3.lower() == "a":
             continue
         else:
             last_exit(inp_menu3)
@@ -194,15 +242,20 @@ while True:
         if inp_menu1.lower() == "q":
             print(f"\n{' İyi Günler ':=^{tbl_len_out}}\n")
             break
-        elif inp_menu1 == "A":
+        elif inp_menu1.lower() == "a":
             continue
         else:
             last_exit(inp_menu1)
 
+    # [21] Araç bilgisi
     elif inp_mainmenu == "21":
         clear()
         print(f"\n{' Araç Enerji Tüketimi Hesaplama Programı ':=^{tbl_len_out}}")
+        menu_car_electric()
+        print(f"\n{'':-^{tbl_len_out}}")
         inp_menu1 = input(f"\n Götüntülemek istediğiniz aracın ID kodunu giriniz: ")
+        clear()
+        print(f"\n{' Araç Enerji Tüketimi Hesaplama Programı ':=^{tbl_len_out}}")
         car_data = car_finder(inp_menu1)
         print(f"\n {'Marka':{tbl_len_car}}: {car_data[1]}")
         print(f" {'Model':{tbl_len_car}}: {car_data[2]}")
@@ -210,44 +263,55 @@ while True:
         print(f" {'Model yılı':{tbl_len_car}}: {car_data[4]}")
         print(f"\n {'Batarya Kapasitesi':{tbl_len_car}}: {car_data[5]}kWh")
         print(f" {'Kullanılabilir Kapasite':{tbl_len_car}}: {car_data[6]}kWh")
-        print(f"\n {'23°C de Normal Havada':{tbl_len_car}}: ")
+        print(f"\n {'23°C Hava Sıcaklığında':{tbl_len_car}} ")
         print(f" {'WLTP Menzili Şehiriçi':{tbl_len_car}}: {car_data[7]}km")
         print(f" {'WLTP Menzili Şehirdışı':{tbl_len_car}}: {car_data[8]}km")
         print(f" {'WLTP Menzili Karma':{tbl_len_car}}: {car_data[9]}km")
-        print(f"\n {'23°C de Normal Havada':{tbl_len_car}}: ")
+        print(f"\n {'23°C Hava Sıcaklığında':{tbl_len_car}} ")
         print(f" {'Kullanıcı Menzili Şehiriçi':{tbl_len_car}}: {car_data[10]}km")
         print(f" {'Kullanıcı Menzili Şehirdışı':{tbl_len_car}}: {car_data[11]}km")
         print(f" {'Kullanıcı Menzili Karma':{tbl_len_car}}: {car_data[12]}km")
+        print(f"\n{'':-^{tbl_len_out}}")
         inp_menu2 = input(f"\n [A] Ana menüye dön | [Q] Programdan Çık | Tercih: ")
         if inp_menu2.lower() == "q":
             print(f"\n{' İyi Günler ':=^{tbl_len_out}}\n")
             break
-        elif inp_menu2 == "A":
+        elif inp_menu2.lower() == "a":
             continue
         else:
             last_exit(inp_menu2)
 
+    # [22] Tüm araçların bilgisi
     elif inp_mainmenu == "22":
         clear()
         car_show()
+        print(f"\n{'':-^{tbl_len_out}}")
         if menu_bottom() == "break": break
 
+    # [31] Güncel akaryakıt fiyatları
     elif inp_mainmenu == "31":
         clear()
         FuelTr_show_now()
+        print(f"\n{'':-^{tbl_len_out}}")
         if menu_bottom() == "break": break
 
+    # [32] Geçmiş akaryakıt fiyatları
     elif inp_mainmenu == "32":
         clear()
         FuelTr_show_all()
+        print(f"\n{'':-^{tbl_len_out}}")
         if menu_bottom() == "break": break
 
+    # [41] Güncel elektrik fiyatları
     elif inp_mainmenu == "41":
         clear()
         ElectricityTr_show()
+        print(f"\n{'':-^{tbl_len_out}}")
         if menu_bottom() == "break": break
 
     else:
         clear()
-        last_exit(inp_mainmenu)
+        menu_main()
+        menu_error(inp_mainmenu)
+        if menu_bottom() == "break": break
     continue
