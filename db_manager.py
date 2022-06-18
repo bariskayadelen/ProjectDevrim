@@ -110,6 +110,20 @@ def car_show():
         print(f" {i[0]}\t{i[1]}\t{i[2]}\t{i[3]}\t\t{i[4]}\t{i[5]}kWh\t\t{i[6]}kWh\t\t{i[9]}km\t\t{i[12]}km")
     con.close()
 
+# def show_all_electric_car_brands():
+#     con = sqlite3.connect("car.db")
+#     cursor = con.cursor()
+#     cursor.execute("CREATE TABLE IF NOT EXISTS CarBrands(BrandID INT,CarBrand TEXT, CarModels)")
+#     con.commit()
+#     cursor.execute("SELECT * FROM CarBrands")
+#     data = cursor.fetchall()
+
+#     print(f"\n ID\tBrand")
+#     print(f" {'':-^{5}}  {'':-^{10}}")
+#     for i in data:
+#         print(f" {i[0]}")
+#     con.close()
+
 def under_construction():
     print(f"\n{' Project Devrim DB Manager ':=^{tbl_len_out}}")
     print(f"\n Bu modül yapım aşamasındadır.")
