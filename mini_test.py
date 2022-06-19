@@ -1,32 +1,20 @@
-# import sqlite3
+import urllib.request
+from bs4 import BeautifulSoup as soup
 
-# def show_all_electric_car_brands():
-#     con = sqlite3.connect("car.db")
-#     cursor = con.cursor()
-#     cursor.execute("SELECT DISTINCT(CarBrand) FROM ElectricCar")
-#     data = cursor.fetchall()
-#     dict_brand = {}
-#     count = 1
-#     for i in data:
-#         dict_brand[count] = i[0]
-#         # print(f" {i[0]}")
-#     con.close()
-#     # print(f"\n ID\tMarka")
-#     # print(f" {'':-^{5}}  {'':-^{10}}")
-#     return dict_brand
+my_url = 'https://www.apple.com/tr/shop/buy-iphone/iphone-13-pro/6.1-in%C3%A7-ekran-128gb-g%C3%BCm%C3%BC%C5%9F'
+req = urllib.request.Request(my_url, headers={'User-Agent': 'Mozilla/5.0'})
+uClient = urllib.request.urlopen(req)
+page_html = uClient.read()
+uClient.close()
 
+page_soup = soup(page_html, "html.parser")
+# read_time = page_soup.find_all('div', {"class":"CurrentConditions--header--27uOE"})[0].span.text
+# location = page_soup.find_all('div', {"class":"CurrentConditions--header--27uOE"})[0].find('h1', {"class":"CurrentConditions--location--kyTeL"}).text
+# temp = page_soup.find_all('div', {"class":"CurrentConditions--primary--2SVPh"})[0].span.text
 
-# print(show_all_electric_car_brands())
+# print(read_time)
+# print(location)
+# print(temp)
 
-list_menu = {
-    1:'Area', 
-    2:'Fuel Consumption', 
-    3:'Length', 
-    4:'Temperature', 
-    5:'Weight', 
-    6:'Volume'}
-def menu_main(unit):
-    return list_menu[unit]
-
-print(list_menu)
-print(menu_main(3))
+price = page_soup.find_all('div', {"class":"rc-prices-fullprice"})
+print(price)
