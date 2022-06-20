@@ -1,7 +1,9 @@
 # Import system and name from os for clear function
+from curses.ascii import isdigit
 from os import system, name
 # from time import sleep
 import sqlite3
+from unicodedata import digit
 
 # Define clear function
 def clear():
@@ -91,6 +93,32 @@ list_car_brands = {
     18:'Volvo'}
 def menu_car_brands(unit):
     return list_car_brands[unit]
+
+def calc_ElectricityTr(power,elec_price,dist_price):
+    active_energy_cost = power * elec_price
+    dist_energy_cost = power * dist_price
+    elec_cons_tax = active_energy_cost * 0.05
+    energy_fund = active_energy_cost * 0.007
+    pre_vat = (active_energy_cost + dist_energy_cost + elec_cons_tax + energy_fund)
+    vat = (pre_vat) * 0.18
+    total = pre_vat + vat
+    return total
+
+def calc_row_number(inp):
+    if inp == "ElectricityTr":
+        con = sqlite3.connect("unitprices.db")
+        cursor = con.cursor()
+        cursor.execute("SELECT COUNT(*) FROM ElectricityTr")
+        row_number = cursor.fetchone()[0]
+        return row_number
+    elif inp == "ElectricCar":
+        con = sqlite3.connect("car.db")
+        cursor = con.cursor()
+        cursor.execute("SELECT COUNT(*) FROM ElectricCar")
+        row_number = cursor.fetchone()[0]
+        return row_number
+    else:
+        return "0"
 
 def find_ElectricityTr(inp):
     while True:
@@ -191,16 +219,6 @@ def show_all_ElectricityTr():
         print(f" {i[0]}\t{i[1]}\t\t{i[2]} - {i[3]} - {i[4]}")
     con.close()
 
-def calc_ElectricityTr(power,elec_price,dist_price):
-    active_energy_cost = power * elec_price
-    dist_energy_cost = power * dist_price
-    elec_cons_tax = active_energy_cost * 0.05
-    energy_fund = active_energy_cost * 0.007
-    pre_vat = (active_energy_cost + dist_energy_cost + elec_cons_tax + energy_fund)
-    vat = (pre_vat) * 0.18
-    total = pre_vat + vat
-    return total
-
 def under_construction():
     print(f"\n Bu modül yapım aşamasındadır.")
 
@@ -225,38 +243,81 @@ while True:
         menu_car_electric()
         print(f"\n{'':-^{tbl_len_out}}")
         inp_menu11 = input(f"\n [A] Ana menüye dön | [Q] Programdan Çık | Tercih: ")
-        car_data = find_electric_car(inp_menu11)
-        clear()
-        print(menu_title())
-        menu_ElectricityTr()
-        # show_all_ElectricityTr()
-        print(f"\n{'':-^{tbl_len_out}}")
-        inp_menu111 = input(f"\n [A] Ana menüye dön | [Q] Programdan Çık | Tercih: ")
-        print(f"\n Şarj maliyetini hesaplamak istediğiniz elektrik tarifesini giriniz: ")
-        electricity_data = find_ElectricityTr(inp_menu111)
-        cost_charge100 = round(calc_ElectricityTr(car_data[6],electricity_data[3],electricity_data[4]),2)
-        cost_charge2080 = round(cost_charge100 * 0.6, 2)
-        clear()
-        print(menu_title())
-        print(f"\n {'Marka':{tbl_len_car}}: {car_data[1]}")
-        print(f" {'Model':{tbl_len_car}}: {car_data[2]}")
-        print(f" {'Motor':{tbl_len_car}}: {car_data[3]}")
-        print(f" {'Model yılı':{tbl_len_car}}: {car_data[4]}")
-        print(f"\n {'Batarya Kapasitesi':{tbl_len_car}}: {car_data[5]} kWh")
-        print(f" {'Kullanılabilir Kapasite':{tbl_len_car}}: {car_data[6]} kWh")
-        print(f"\n {'Elektrik Tarifesi':{tbl_len_car}}: {electricity_data[1]} - {electricity_data[2]}")
-        print(f"\n {'Tam Şarj Ücreti':{tbl_len_car}}: {cost_charge100} ₺")
-        print(f" {'%20-%80 Şarj Ücreti':{tbl_len_car}}: {cost_charge2080} ₺")
-        print(f"\n {'23°C Hava Sıcaklığında':{tbl_len_car}}  Menzil\t\tKm Maliyeti")
-        print(f" {'':-^{tbl_len_car}}  {'':-^{13}}  {'':-^{13}}")
-        print(f" {'Kullanıcı Menzili Şehiriçi':{tbl_len_car}}: {car_data[10]}km\t{round(cost_charge100/car_data[10],2)} ₺")
-        print(f" {'Kullanıcı Menzili Şehirdışı':{tbl_len_car}}: {car_data[11]}km\t{round(cost_charge100/car_data[11],2)} ₺")
-        print(f" {'Kullanıcı Menzili Karma':{tbl_len_car}}: {car_data[12]}km\t{round(cost_charge100/car_data[12],2)} ₺")
-        # print(f" {'Fabrika Menzili Şehiriçi':{tbl_len_car}}: {car_data[7]}km\t{round(cost_charge100/car_data[7],2)} ₺")
-        # print(f" {'Fabrika Menzili Şehirdışı':{tbl_len_car}}: {car_data[8]}km\t{round(cost_charge100/car_data[8],2)} ₺")
-        # print(f" {'Fabrika Menzili Karma':{tbl_len_car}}: {car_data[9]}km\t{round(cost_charge100/car_data[9],2)} ₺")
-        print(f"\n{'':-^{tbl_len_out}}")
-        if menu_bottom() == "break": break
+        try:
+            menu11 = int(inp_menu11)
+            if menu11 in range(1,(calc_row_number("ElectricCar") + 1)):
+                car_data = find_electric_car(inp_menu11)
+                clear()
+                print(menu_title())
+                print(f"\n Şarj maliyetini hesaplamak istediğiniz elektrik tarifesini giriniz. ")
+                menu_ElectricityTr()
+                print(f"\n{'':-^{tbl_len_out}}")
+                inp_menu111 = input(f"\n [A] Ana menüye dön | [Q] Programdan Çık | Tercih: ")
+                try:
+                    menu111 = int(inp_menu111)
+                    if menu111 in range(1,(calc_row_number("ElectricityTr") + 1)):
+                        electricity_data = find_ElectricityTr(inp_menu111)
+                        cost_charge100 = round(calc_ElectricityTr(car_data[6],electricity_data[3],electricity_data[4]),2)
+                        cost_charge2080 = round(cost_charge100 * 0.6, 2)
+                        clear()
+                        print(menu_title())
+                        print(f"\n {'Marka':{tbl_len_car}}: {car_data[1]}")
+                        print(f" {'Model':{tbl_len_car}}: {car_data[2]}")
+                        print(f" {'Motor':{tbl_len_car}}: {car_data[3]}")
+                        print(f" {'Model yılı':{tbl_len_car}}: {car_data[4]}")
+                        print(f"\n {'Batarya Kapasitesi':{tbl_len_car}}: {car_data[5]} kWh")
+                        print(f" {'Kullanılabilir Kapasite':{tbl_len_car}}: {car_data[6]} kWh")
+                        print(f"\n {'Elektrik Tarifesi':{tbl_len_car}}: {electricity_data[1]} - {electricity_data[2]}")
+                        print(f"\n {'Tam Şarj Ücreti':{tbl_len_car}}: {cost_charge100} ₺")
+                        print(f" {'%20-%80 Şarj Ücreti':{tbl_len_car}}: {cost_charge2080} ₺")
+                        print(f"\n {'23°C Hava Sıcaklığında':{tbl_len_car}}  Menzil\t\tKm Maliyeti")
+                        print(f" {'':-^{tbl_len_car}}  {'':-^{13}}  {'':-^{13}}")
+                        print(f" {'Kullanıcı Menzili Şehiriçi':{tbl_len_car}}: {car_data[10]}km\t{round(cost_charge100/car_data[10],2)} ₺")
+                        print(f" {'Kullanıcı Menzili Şehirdışı':{tbl_len_car}}: {car_data[11]}km\t{round(cost_charge100/car_data[11],2)} ₺")
+                        print(f" {'Kullanıcı Menzili Karma':{tbl_len_car}}: {car_data[12]}km\t{round(cost_charge100/car_data[12],2)} ₺")
+                        # print(f" {'Fabrika Menzili Şehiriçi':{tbl_len_car}}: {car_data[7]}km\t{round(cost_charge100/car_data[7],2)} ₺")
+                        # print(f" {'Fabrika Menzili Şehirdışı':{tbl_len_car}}: {car_data[8]}km\t{round(cost_charge100/car_data[8],2)} ₺")
+                        # print(f" {'Fabrika Menzili Karma':{tbl_len_car}}: {car_data[9]}km\t{round(cost_charge100/car_data[9],2)} ₺")
+                        print(f"\n{'':-^{tbl_len_out}}")
+                        if menu_bottom() == "break": break
+                    else:
+                        clear()
+                        print(menu_title())
+                        menu_error(inp_menu111)
+                        print(f"\n{'':-^{tbl_len_out}}")
+                        if menu_bottom() == "break": break
+                except:
+                    if inp_menu111.lower() == "q":
+                        print(f"\n{' İyi Günler ':=^{tbl_len_out}}\n")
+                        break
+                    elif inp_menu111.lower() == "a":
+                        continue
+                    else:
+                        clear()
+                        print(menu_title())
+                        menu_error(inp_menu111)
+                        print(f"\n{'':-^{tbl_len_out}}")
+                        if menu_bottom() == "break": break
+
+            else:
+                clear()
+                print(menu_title())
+                menu_error(inp_menu11)
+                print(f"\n{'':-^{tbl_len_out}}")
+                if menu_bottom() == "break": break
+
+        except:
+            if inp_menu11.lower() == "q":
+                print(f"\n{' İyi Günler ':=^{tbl_len_out}}\n")
+                break
+            elif inp_menu11.lower() == "a":
+                continue
+            else:
+                clear()
+                print(menu_title())
+                menu_error(inp_menu11)
+                print(f"\n{'':-^{tbl_len_out}}")
+                if menu_bottom() == "break": break
 
     # [12] Hibrit araç şarj/depo dolum maliyeti
     elif inp_mainmenu == "12":
