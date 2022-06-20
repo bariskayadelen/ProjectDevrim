@@ -1,9 +1,6 @@
 # Import system and name from os for clear function
-from curses.ascii import isdigit
 from os import system, name
-# from time import sleep
 import sqlite3
-from unicodedata import digit
 
 # Define clear function
 def clear():
@@ -65,6 +62,17 @@ def menu_car_electric():
     con = sqlite3.connect("car.db")
     cursor = con.cursor()
     cursor.execute("SELECT * FROM ElectricCar")
+    data = cursor.fetchall()
+    print(f"\n ID\tMarka\t\tModel")
+    print(f" {'':-^{5}}  {'':-^{14}}  {'':-^{30}}")
+    for i in data:
+        print(f" {i[0]}\t{i[1]}\t\t{i[2]}")
+    con.close()
+
+def menu_car_fuel():
+    con = sqlite3.connect("car.db")
+    cursor = con.cursor()
+    cursor.execute("SELECT * FROM FuelCar")
     data = cursor.fetchall()
     print(f"\n ID\tMarka\t\tModel")
     print(f" {'':-^{5}}  {'':-^{14}}  {'':-^{30}}")
@@ -323,15 +331,19 @@ while True:
     elif inp_mainmenu == "12":
         clear()
         print(menu_title())
+        # print(f"\n Tüketim maliyetini hesaplamak istediğiniz aracın ID kodunu giriniz. ")
+        # menu_car_hybrid()
         under_construction()
         print(f"\n{'':-^{tbl_len_out}}")
+        # inp_menu11 = input(f"\n [A] Ana menüye dön | [Q] Programdan Çık | Tercih: ")
         if menu_bottom() == "break": break
 
     # [13] Benzinli/Dizel araç depo dolum maliyeti hesapla
     elif inp_mainmenu == "13":
         clear()
         print(menu_title())
-        under_construction()
+        print(f"\n Akaryakıt maliyetini hesaplamak istediğiniz aracın ID kodunu giriniz. ")
+        menu_car_fuel()
         print(f"\n{'':-^{tbl_len_out}}")
         if menu_bottom() == "break": break
 
