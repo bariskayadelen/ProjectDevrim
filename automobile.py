@@ -1,7 +1,6 @@
 # Import system and name from os for clear function
 from os import system, name
 import sqlite3
-# from unicodedata import digit
 
 # Define clear function
 def clear():
