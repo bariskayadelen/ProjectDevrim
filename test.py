@@ -53,10 +53,13 @@ def menu_ElectricityTr():
     cursor = con.cursor()
     cursor.execute("SELECT * FROM ElectricityTr")
     data = cursor.fetchall()
-    print(f"\n ID\tAbone Grubu\tTarife")
-    print(f" {'':-^{5}}  {'':-^{14}}  {'':-^{30}}")
+    table = BeautifulTable()
+    table.set_style(BeautifulTable.STYLE_COMPACT)
+    table.columns.header = ["ID", "Abone Grubu", "Tarife"]
+    table.columns.alignment = BeautifulTable.ALIGN_LEFT
     for i in data:
-        print(f" {i[0]}\t{i[1]}\t\t{i[2]}")
+        table.rows.append([i[0],i[1],i[2]])
+    print(table)
     con.close()
 
 def menu_car_electric():
@@ -221,6 +224,7 @@ def show_all_cars():
     table = BeautifulTable(maxwidth=118)
     table.set_style(BeautifulTable.STYLE_COMPACT)
     table.columns.header = ["ID", "Marka", "Model", "Motor", "Yıl", "Pil Kap.", "Kul. Pil", "WLTP Menzili", "Kul. Menzili"]
+    table.columns.alignment = BeautifulTable.ALIGN_LEFT
     # table.rows.append[("","","","","","kWh","kWh","km","km")]
     for i in data:
         table.rows.append([i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[9],i[12]])
@@ -259,6 +263,7 @@ def show_current_FuelTr():
     table = BeautifulTable()
     table.set_style(BeautifulTable.STYLE_COMPACT)
     table.columns.header = ["Tarih", "Şirket", "Benzin Fiyatı", "Dizel Fiyatı", "LPG Fiyatı"]
+    table.columns.alignment = BeautifulTable.ALIGN_LEFT
     for i in data:
         table.rows.append([i[0],i[1],i[2],i[3],i[4]])
     print(table)
@@ -272,6 +277,7 @@ def show_all_FuelTr():
     table = BeautifulTable()
     table.set_style(BeautifulTable.STYLE_COMPACT)
     table.columns.header = ["Tarih", "Şirket", "Benzin Fiyatı", "Dizel Fiyatı", "LPG Fiyatı"]
+    table.columns.alignment = BeautifulTable.ALIGN_LEFT
     for i in data:
         table.rows.append([i[0],i[1],i[2],i[3],i[4]])
     print(table)
@@ -285,6 +291,7 @@ def show_all_ElectricityTr():
     table = BeautifulTable()
     table.set_style(BeautifulTable.STYLE_COMPACT)
     table.columns.header = ["ID", "Abone Grubu", "Tarife", "Tarife Bed.", "Dağ. Bed."]
+    table.columns.alignment = BeautifulTable.ALIGN_LEFT
     for i in data:
         table.rows.append([i[0],i[1],i[2],i[3],i[4]])
     print(table)
@@ -320,7 +327,7 @@ while True:
                 car_data = find_electric_car(inp_menu11)
                 clear()
                 print(menu_title())
-                print(f"\n Şarj maliyetini hesaplamak istediğiniz elektrik tarifesini giriniz. ")
+                print(f"\n Şarj maliyetini hesaplamak istediğiniz elektrik tarifesini giriniz.\n")
                 menu_ElectricityTr()
                 print(f"\n{'':-^{tbl_len_out}}")
                 inp_menu111 = input(f"\n [A] Ana menüye dön | [Q] Programdan Çık | Tercih: ")
