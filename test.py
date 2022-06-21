@@ -1,6 +1,7 @@
 # Import system and name from os for clear function
 from os import system, name
 import sqlite3
+from beautifultable import BeautifulTable
 
 # Define clear function
 def clear():
@@ -63,10 +64,13 @@ def menu_car_electric():
     cursor = con.cursor()
     cursor.execute("SELECT * FROM ElectricCar")
     data = cursor.fetchall()
-    print(f"\n ID\tMarka\t\tModel")
-    print(f" {'':-^{5}}  {'':-^{14}}  {'':-^{30}}")
+    table = BeautifulTable()
+    table.set_style(BeautifulTable.STYLE_COMPACT)
+    table.columns.header = ["ID", "Marka", "Model"]
+    table.columns.alignment = BeautifulTable.ALIGN_LEFT
     for i in data:
-        print(f" {i[0]}\t{i[1]}\t\t{i[2]}")
+        table.rows.append([i[0],i[1],i[2]])
+    print(table)
     con.close()
 
 def menu_car_fuel():
@@ -74,10 +78,13 @@ def menu_car_fuel():
     cursor = con.cursor()
     cursor.execute("SELECT * FROM FuelCar")
     data = cursor.fetchall()
-    print(f"\n ID\tMarka\t\tModel")
-    print(f" {'':-^{5}}  {'':-^{14}}  {'':-^{30}}")
+    table = BeautifulTable()
+    table.set_style(BeautifulTable.STYLE_COMPACT)
+    table.columns.header = ["ID", "Marka", "Model", "Motor"]
+    table.columns.alignment = BeautifulTable.ALIGN_LEFT
     for i in data:
-        print(f" {i[0]}\t{i[1]}\t\t{i[2]}")
+        table.rows.append([i[0],i[1],i[2],i[3]])
+    print(table)
     con.close()
 
 list_car_brands = {
@@ -205,16 +212,19 @@ def find_fuel_car(carid):
     con.close()
     return data[0]
 
+# https://ev-database.org/
 def show_all_cars():
-    # https://ev-database.org/
     con = sqlite3.connect("car.db")
     cursor = con.cursor()
     cursor.execute("SELECT * FROM ElectricCar")
     data = cursor.fetchall()
-    print(f"\n ID\tMarka\tModel\t\tMotor\t\tYıl\tPil Kap.\tKul. Pil\tWLTP Menzili.\tKul. Menzili")
-    print(f" {'':-^{5}}  {'':-^{6}}  {'':-^{14}}  {'':-^{14}}  {'':-^{6}}  {'':-^{14}}  {'':-^{14}}  {'':-^{14}}  {'':-^{14}}")
+    table = BeautifulTable(maxwidth=118)
+    table.set_style(BeautifulTable.STYLE_COMPACT)
+    table.columns.header = ["ID", "Marka", "Model", "Motor", "Yıl", "Pil Kap.", "Kul. Pil", "WLTP Menzili", "Kul. Menzili"]
+    # table.rows.append[("","","","","","kWh","kWh","km","km")]
     for i in data:
-        print(f" {i[0]}\t{i[1]}\t{i[2]}\t{i[3]}\t\t{i[4]}\t{i[5]}kWh\t\t{i[6]}kWh\t\t{i[9]}km\t\t{i[12]}km")
+        table.rows.append([i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[9],i[12]])
+    print(table)
     con.close()
 
 # !!! 
@@ -246,10 +256,12 @@ def show_current_FuelTr():
     cursor = con.cursor()
     cursor.execute("SELECT * FROM FuelTr ORDER BY Date DESC LIMIT 1")
     data = cursor.fetchall()
-    print(f"\n Tarih  \tŞirket  \tBenzin Fiyatı\tDizel Fiyatı\tLPG Fiyatı")
-    print(f" {'':-^{13}}  {'':-^{13}}   {'':-^{13}}   {'':-^{13}}   {'':-^{13}}")
+    table = BeautifulTable()
+    table.set_style(BeautifulTable.STYLE_COMPACT)
+    table.columns.header = ["Tarih", "Şirket", "Benzin Fiyatı", "Dizel Fiyatı", "LPG Fiyatı"]
     for i in data:
-        print(f" {i[0]}\t{i[1]}\t{i[2]}\t\t{i[3]}\t\t{i[4]}")
+        table.rows.append([i[0],i[1],i[2],i[3],i[4]])
+    print(table)
     con.close()
 
 def show_all_FuelTr():
@@ -257,10 +269,12 @@ def show_all_FuelTr():
     cursor = con.cursor()
     cursor.execute("SELECT * FROM FuelTr")
     data = cursor.fetchall()
-    print(f"\n Tarih  \tŞirket  \tBenzin Fiyatı\tDizel Fiyatı\tLPG Fiyatı")
-    print(f" {'':-^{13}}  {'':-^{13}}   {'':-^{13}}   {'':-^{13}}   {'':-^{13}}")
+    table = BeautifulTable()
+    table.set_style(BeautifulTable.STYLE_COMPACT)
+    table.columns.header = ["Tarih", "Şirket", "Benzin Fiyatı", "Dizel Fiyatı", "LPG Fiyatı"]
     for i in data:
-        print(f" {i[0]}\t{i[1]}\t{i[2]}\t\t{i[3]}\t\t{i[4]}")
+        table.rows.append([i[0],i[1],i[2],i[3],i[4]])
+    print(table)
     con.close()
 
 def show_all_ElectricityTr():
@@ -268,17 +282,19 @@ def show_all_ElectricityTr():
     cursor = con.cursor()
     cursor.execute("SELECT * FROM ElectricityTr")
     data = cursor.fetchall()
-    print(f"\n ID\tAbone Grubu\tTarife\t\tTarife Bedeli\tDağıtım Bedeli")
-    print(f" {'':-^{5}}  {'':-^{14}}  {'':-^{13}}   {'':-^{13}}   {'':-^{13}}")
+    table = BeautifulTable()
+    table.set_style(BeautifulTable.STYLE_COMPACT)
+    table.columns.header = ["ID", "Abone Grubu", "Tarife", "Tarife Bed.", "Dağ. Bed."]
     for i in data:
-        print(f" {i[0]}\t{i[1]}\t\t{i[2]} - {i[3]} - {i[4]}")
+        table.rows.append([i[0],i[1],i[2],i[3],i[4]])
+    print(table)
     con.close()
 
 def under_construction():
     print(f"\n Bu modül yapım aşamasındadır.")
 
 # Table dimentions
-tbl_len_out = 78
+tbl_len_out = 98
 tbl_len_in = 38
 tbl_len_car = 30
 
@@ -294,7 +310,7 @@ while True:
     elif inp_mainmenu == "11":
         clear()
         print(menu_title())
-        print(f"\n Şarj maliyetini hesaplamak istediğiniz aracın ID kodunu giriniz. ")
+        print(f"\n Şarj maliyetini hesaplamak istediğiniz aracın ID kodunu giriniz.\n")
         menu_car_electric()
         print(f"\n{'':-^{tbl_len_out}}")
         inp_menu11 = input(f"\n [A] Ana menüye dön | [Q] Programdan Çık | Tercih: ")
@@ -389,7 +405,7 @@ while True:
     elif inp_mainmenu == "13":
         clear()
         print(menu_title())
-        print(f"\n Akaryakıt maliyetini hesaplamak istediğiniz aracın ID kodunu giriniz. ")
+        print(f"\n Akaryakıt maliyetini hesaplamak istediğiniz aracın ID kodunu giriniz.\n")
         menu_car_fuel()
         print(f"\n{'':-^{tbl_len_out}}")
         inp_menu13 = input(f"\n [A] Ana menüye dön | [Q] Programdan Çık | Tercih: ")
@@ -479,7 +495,7 @@ while True:
     elif inp_mainmenu == "22":
         clear()
         print(menu_title())
-        print(f"\n Tüm araçlara ait bilgiler aşağıdadır.")
+        print(f"\n Tüm araçlara ait bilgiler aşağıdadır.\n")
         show_all_cars()
         print(f"\n{'':-^{tbl_len_out}}")
         if menu_bottom() == "break": break
@@ -488,7 +504,7 @@ while True:
     elif inp_mainmenu == "31":
         clear()
         print(menu_title())
-        print(f"\n Güncel akaryakıt fiyatları aşağıdadır.")
+        print(f"\n Güncel akaryakıt fiyatları aşağıdadır.\n")
         show_current_FuelTr()
         print(f"\n{'':-^{tbl_len_out}}")
         if menu_bottom() == "break": break
@@ -497,7 +513,7 @@ while True:
     elif inp_mainmenu == "32":
         clear()
         print(menu_title())
-        print(f"\n Geçmiş akaryakıt fiyatları aşağıdadır.")
+        print(f"\n Geçmiş akaryakıt fiyatları aşağıdadır.\n")
         show_all_FuelTr()
         print(f"\n{'':-^{tbl_len_out}}")
         if menu_bottom() == "break": break
@@ -506,7 +522,7 @@ while True:
     elif inp_mainmenu == "41":
         clear()
         print(menu_title())
-        print(f"\n Güncel elektrik fiyatları aşağıdadır.")
+        print(f"\n Güncel elektrik fiyatları aşağıdadır.\n")
         show_all_ElectricityTr()
         print(f"\n{'':-^{tbl_len_out}}")
         if menu_bottom() == "break": break
