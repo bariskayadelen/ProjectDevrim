@@ -196,6 +196,7 @@ def find_electric_car(carid):
 def find_electric_car_brand():
     pass
 
+# https://motoreu.com/
 def find_fuel_car(carid):
     con = sqlite3.connect("car.db")
     cursor = con.cursor()
