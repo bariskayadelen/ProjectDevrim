@@ -10,32 +10,32 @@ Bot Script; Aytemiz Petrol sayfasına bağlanıp güncel akaryakıt fiyatların�
 
 ### 11. Elektrikli araç şarj maliyeti hesapla
 
-Elektrikli araçlar için depo dolum maliyeti, fabrika ve kullanıcı verisine göre menzil ve km başına kaç liralık elektrik harcadığı bildisini veriyor.
+Elektrikli araçlar için depo dolum maliyeti, fabrika ve kullanıcı verisine göre menzil ve km başına kaç liralık elektrik harcadığı bilgisini veriyor.
 
-### 12 Hibrit araç şarj/depo dolum maliyeti hesapla
+### 12. Hibrit araç şarj/depo dolum maliyeti hesapla
 
 Bu modül yapım aşamasında.
 
-### 13 Benzinli/Dizel araç depo dolum maliyeti hesapla
+### 13. Benzinli/Dizel araç depo dolum maliyeti hesapla
 
 Benzinli / Dizel araçlar için depo dolum maliyeti, fabrika verisine göre menzil ve km başına kaç liralık akaryakıt harcadığı bildisini veriyor.
 
-### 21 Araç bilgisi göster
+### 21. Araç bilgisi göster
 
 Bu modül yapım aşamasında.
 
-### 22 Tüm araçların bilgisini göster
+### 22. Tüm araçların bilgisini göster
 
-Veri tabanında olan tüm araçları listelersiniz.
+Veri tabanında olan tüm araçları listeleyebilirsiniz.
 
-### 31 Güncel akaryakıt fiyatlarını göster
+### 31. Güncel akaryakıt fiyatlarını göster
 
-Bugün geçerli olan akaryakıt satış fiyatları. Fiyatlar pompa satış fiyatlarıdır.
+Bugün geçerli olan akaryakıt satış pompa satış fiyatlarıdır.
 
-### 32 Geçmiş akaryakıt fiyatlarını göster
+### 32. Geçmiş akaryakıt fiyatlarını göster
 
-Geçmiş günlere ait akaryakıt fiyatları
+Geçmiş günlere ait akaryakıt fiyatlarıdır.
 
 ### 41. Güncel elektrik fiyatlarını göster
 
-EPDK tarafından yayınlan tüm abone gruplarına ait güncel elektrik fiyatları. Fiyatlar baz fiyatlardır. Son tüketici için dağıtım ücretleri ve vergilerin eklenmesi gerekiyor.
+EPDK tarafından yayınlan tüm abone gruplarına ait güncel elektrik fiyatlarıdır. Fiyatlar baz fiyatlardır. Son tüketici için dağıtım ücretleri ve vergilerin hesaplanarak eklenmesi gerekiyor.
