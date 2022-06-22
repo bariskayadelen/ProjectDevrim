@@ -39,3 +39,11 @@ Geçmiş günlere ait akaryakıt fiyatlarıdır.
 ### 41. Güncel elektrik fiyatlarını göster
 
 EPDK tarafından yayınlan tüm abone gruplarına ait güncel elektrik fiyatlarıdır. Fiyatlar baz fiyatlardır. Son tüketici için dağıtım ücretleri ve vergilerin hesaplanarak eklenmesi gerekiyor.
+
+## car.db
+
+Araba bilgilerinin bulunduğu veritabanıdır. Elektrikli, Hibrit ve İçten yanmalı araçlar için 3 farklı tablo bulunmaktadır.
+
+## unitprices.db
+
+Birim fiyatların olduğu veritabanı. Güncel ve geçmişe ait elektrik ve akayarkıt fiyatları bulunmaktadır.
