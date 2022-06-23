@@ -65,21 +65,21 @@ def menu_ElectricityTr():
 def menu_car_electric():
     con = sqlite3.connect("car.db")
     cursor = con.cursor()
-    cursor.execute("SELECT * FROM ElectricCar")
+    cursor.execute("SELECT CarID, CarBrand, CarModel, EngineModel FROM ElectricCar ORDER BY CarBrand, CarModel")
     data = cursor.fetchall()
     table = BeautifulTable()
     table.set_style(BeautifulTable.STYLE_COMPACT)
-    table.columns.header = ["ID", "Marka", "Model"]
+    table.columns.header = ["ID", "Marka", "Model", "Motor"]
     table.columns.alignment = BeautifulTable.ALIGN_LEFT
     for i in data:
-        table.rows.append([i[0],i[1],i[2]])
+        table.rows.append([i[0],i[1],i[2],i[3]])
     print(table)
     con.close()
 
 def menu_car_fuel():
     con = sqlite3.connect("car.db")
     cursor = con.cursor()
-    cursor.execute("SELECT * FROM FuelCar")
+    cursor.execute("SELECT CarID, CarBrand, CarModel, EngineModel FROM FuelCar ORDER BY CarBrand, CarModel")
     data = cursor.fetchall()
     table = BeautifulTable()
     table.set_style(BeautifulTable.STYLE_COMPACT)
