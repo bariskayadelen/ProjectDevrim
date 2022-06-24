@@ -90,27 +90,19 @@ def menu_car_fuel():
     print(table)
     con.close()
 
-list_car_brands = {
-    1:'Audi',
-    2:'BMW',
-    3:'Citroen',
-    4:'DS',
-    5:'Hyundai',
-    6:'Jaguar',
-    7:'Mercedes Benz',
-    8:'Mini',
-    9:'Nissan',
-    10:'Peugeot',
-    11:'Polestar',
-    12:'Porsche',
-    13:'Renault',
-    14:'Skoda',
-    15:'Smart',
-    16:'Tesla',
-    17:'Volkswagen',
-    18:'Volvo'}
-def menu_car_brands(unit):
-    return list_car_brands[unit]
+def menu_car_brands():
+    con = sqlite3.connect("car.db")
+    cursor = con.cursor()
+    cursor.execute("SELECT BrandID, Brand FROM CarBrands WHERE Emodel ='1' ORDER BY Brand")
+    data = cursor.fetchall()
+    table = BeautifulTable()
+    table.set_style(BeautifulTable.STYLE_COMPACT)
+    table.columns.header = ["ID", "Marka"]
+    table.columns.alignment = BeautifulTable.ALIGN_LEFT
+    for i in data:
+        table.rows.append([i[0],i[1]])
+    return(table)
+    con.close()
 
 def calc_ElectricityTr(power,elec_price,dist_price):
     active_energy_cost = power * elec_price
@@ -476,7 +468,7 @@ while True:
             clear()
             print(menu_title())
             print(f"\n Görüntülemek istediğiniz araç markasını seçiniz.\n")
-            print(list_car_brands)
+            print(menu_car_brands())
             print(f"\n{'':-^{tbl_len_out}}")
             if menu_bottom() == "break": break
         elif inp_menu21 == "2":
