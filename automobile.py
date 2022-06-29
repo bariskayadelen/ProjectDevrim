@@ -211,15 +211,15 @@ def find_fuel_car(carid):
 def show_all_cars():
     con = sqlite3.connect("car.db")
     cursor = con.cursor()
-    cursor.execute("SELECT * FROM ElectricCar")
+    cursor.execute("SELECT * FROM ElectricCar ORDER BY CarBrand, CarModel")
     data = cursor.fetchall()
-    table = BeautifulTable(maxwidth=118)
+    table = BeautifulTable(maxwidth=150)
     table.set_style(BeautifulTable.STYLE_COMPACT)
-    table.columns.header = ["ID", "Marka", "Model", "Motor", "Yıl", "Pil Kap.", "Kul. Pil", "WLTP Menzili", "Kul. Menzili"]
+    table.columns.header = ["ID", "Marka", "Model", "Motor", "Yıl", "Pil Kap.", "Kul. Pil", "WLTP Men.", "Şehiriçi", "Şehirdışı", "Karma"]
     table.columns.alignment = BeautifulTable.ALIGN_LEFT
     # table.rows.append[("","","","","","kWh","kWh","km","km")]
     for i in data:
-        table.rows.append([i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[9],i[12]])
+        table.rows.append([i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[9],i[10],i[11],i[12]])
     print(table)
     con.close()
 
