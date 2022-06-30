@@ -19,7 +19,7 @@ def menu_main():
     print(menu_title())
     print(f"\nLütfen yapmak istediğiniz işlemi aşağıdaki menüden seçiniz:\n")
     print(f" [11] Elektrikli araç şarj maliyeti hesapla")
-    print(f" [12] Hibrit araç şarj/depo dolum maliyeti hesapla")
+    # print(f" [12] Hibrit araç şarj/depo dolum maliyeti hesapla")
     print(f" [13] Benzinli/Dizel araç depo dolum maliyeti hesapla")
     print(f"\n [21] Araç bilgisi göster")
     print(f" [22] Tüm araçların bilgisini göster")
@@ -90,19 +90,47 @@ def menu_car_fuel():
     print(table)
     con.close()
 
-def menu_car_brands():
+# def menu_car_brands():
+#     con = sqlite3.connect("car.db")
+#     cursor = con.cursor()
+#     cursor.execute("SELECT BrandID, Brand FROM CarBrands WHERE Emodel ='1' ORDER BY Brand")
+#     data = cursor.fetchall()
+#     table = BeautifulTable()
+#     table.set_style(BeautifulTable.STYLE_COMPACT)
+#     table.columns.header = ["ID", "Marka"]
+#     table.columns.alignment = BeautifulTable.ALIGN_LEFT
+#     con.close()
+#     for i in data:
+#         table.rows.append([i[0],i[1]])
+#     return(table)
+
+def menu_car_electric_models(inp):
     con = sqlite3.connect("car.db")
     cursor = con.cursor()
-    cursor.execute("SELECT BrandID, Brand FROM CarBrands WHERE Emodel ='1' ORDER BY Brand")
+    cursor.execute("SELECT CarID, CarBrand, CarModel, EngineModel FROM ElectricCar WHERE CarBrand=? ORDER BY CarModel", (inp,))
     data = cursor.fetchall()
     table = BeautifulTable()
     table.set_style(BeautifulTable.STYLE_COMPACT)
-    table.columns.header = ["ID", "Marka"]
+    table.columns.header = ["ID", "Marka", "Model", "Motor Gücü"]
     table.columns.alignment = BeautifulTable.ALIGN_LEFT
-    for i in data:
-        table.rows.append([i[0],i[1]])
-    return(table)
     con.close()
+    for i in data:
+        table.rows.append([i[0],i[1],i[2],i[3]])
+    return(table)
+
+def menu_car_fuel_models(inp):
+    con = sqlite3.connect("car.db")
+    cursor = con.cursor()
+    cursor.execute("SELECT CarID, CarBrand, CarModel, EnginePower FROM FuelCar WHERE CarBrand=? ORDER BY CarModel", (inp,))
+    data = cursor.fetchall()
+    table = BeautifulTable()
+    table.set_style(BeautifulTable.STYLE_COMPACT)
+    table.columns.header = ["ID", "Marka", "Model", "Motor Gücü"]
+    table.columns.alignment = BeautifulTable.ALIGN_LEFT
+    con.close()
+    for i in data:
+        table.rows.append([i[0],i[1],i[2],i[3]])
+    return(table)
 
 def calc_ElectricityTr(power,elec_price,dist_price):
     active_energy_cost = power * elec_price
@@ -165,6 +193,30 @@ def calc_row_number(inp):
         cursor.execute("SELECT COUNT(*) FROM FuelCar")
         row_number = cursor.fetchone()[0]
         return row_number
+    elif inp == "ElectricCarBrands":
+        con = sqlite3.connect("car.db")
+        cursor = con.cursor()
+        cursor.execute("SELECT COUNT(*) FROM ElectricCarBrands")
+        row_number = cursor.fetchone()[0]
+        return row_number
+    elif inp == "HybridCarBrands":
+        con = sqlite3.connect("car.db")
+        cursor = con.cursor()
+        cursor.execute("SELECT COUNT(*) FROM HybridCarBrands")
+        row_number = cursor.fetchone()[0]
+        return row_number
+    elif inp == "FuelCarBrands":
+        con = sqlite3.connect("car.db")
+        cursor = con.cursor()
+        cursor.execute("SELECT COUNT(*) FROM FuelCarBrands")
+        row_number = cursor.fetchone()[0]
+        return row_number
+    # elif inp == "CarBrands":
+    #     con = sqlite3.connect("car.db")
+    #     cursor = con.cursor()
+    #     cursor.execute("SELECT COUNT(*) FROM CarBrands")
+    #     row_number = cursor.fetchone()[0]
+    #     return row_number
     else:
         return "0"
 
@@ -195,8 +247,37 @@ def find_electric_car(carid):
     con.close()
     return data[0]
 
-def find_electric_car_brand():
-    pass
+def find_electric_car_brand(inp):
+    con = sqlite3.connect("car.db")
+    cursor = con.cursor()
+    cursor.execute("SELECT BrandID, Brand FROM ElectricCarBrands WHERE BrandID=?", (inp,))
+    data = cursor.fetchall()[0]
+    con.close()
+    return data[1]
+
+def find_electric_car_model(inp):
+    con = sqlite3.connect("car.db")
+    cursor = con.cursor()
+    cursor.execute("SELECT CarID, CarBrand, CarModel, EngineModel FROM ElectricCar WHERE CarBrand=? ORDER BY CarModel", (inp,))
+    data = cursor.fetchall()
+    con.close()
+    return data[0]
+
+def find_fuel_car_brand(inp):
+    con = sqlite3.connect("car.db")
+    cursor = con.cursor()
+    cursor.execute("SELECT BrandID, Brand FROM FuelCarBrands WHERE BrandID=?", (inp,))
+    data = cursor.fetchall()[0]
+    con.close()
+    return data[1]
+
+def find_fuel_car_model(inp):
+    con = sqlite3.connect("car.db")
+    cursor = con.cursor()
+    cursor.execute("SELECT CarID, CarBrand, CarModel, EngineModel FROM FuelCar WHERE CarBrand=? ORDER BY CarModel", (inp,))
+    data = cursor.fetchall()
+    con.close()
+    return data[0]
 
 # https://motoreu.com/
 def find_fuel_car(carid):
@@ -223,30 +304,22 @@ def show_all_cars():
     print(table)
     con.close()
 
-# !!! 
-def show_all_electric_car_brands():
+def show_one_car(carid):
     con = sqlite3.connect("car.db")
     cursor = con.cursor()
-    cursor.execute("SELECT DISTINCT(CarBrand) FROM ElectricCar")
+    cursor.execute("SELECT * FROM ElectricCar WHERE CarID=?", (carid,))
     data = cursor.fetchall()
-    dict_brand = []
-    count = 0
-    print(f"\n ID\tMarka")
-    print(f" {'':-^{5}}  {'':-^{10}}")
+    table = BeautifulTable(maxwidth=150)
+    table.set_style(BeautifulTable.STYLE_COMPACT)
+    table.columns.header = ["ID", "Marka", "Model", "Motor", "Yıl", "Pil Kap.", "Kul. Pil", "WLTP Men.", "Şehiriçi", "Şehirdışı", "Karma"]
+    table.columns.alignment = BeautifulTable.ALIGN_LEFT
+    # table.rows.append[("","","","","","kWh","kWh","km","km")]
     for i in data:
-        dict_brand.append(count, {i[0]})
-        # print(f" {i[0]}")
+        table.rows.append([i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[9],i[10],i[11],i[12]])
+    print(table)
     con.close()
 
-# !!! 
-def show_all_hibrid_car_brands():
-    pass
-
-# !!! 
-def show_all_gasoline_car_brands():
-    pass
-
-
+# Show most recent fuel price
 def show_current_FuelTr():
     con = sqlite3.connect("unitprices.db")
     cursor = con.cursor()
@@ -261,6 +334,7 @@ def show_current_FuelTr():
     print(table)
     con.close()
 
+# Show all fuel prices
 def show_all_FuelTr():
     con = sqlite3.connect("unitprices.db")
     cursor = con.cursor()
@@ -288,6 +362,48 @@ def show_all_ElectricityTr():
         table.rows.append([i[0],i[1],i[2],i[3],i[4]])
     print(table)
     con.close()
+
+def show_ElectricCarBrands():
+    con = sqlite3.connect("car.db")
+    cursor = con.cursor()
+    cursor.execute("SELECT * FROM ElectricCarBrands")
+    data = cursor.fetchall()
+    table = BeautifulTable()
+    table.set_style(BeautifulTable.STYLE_COMPACT)
+    table.columns.header = ["ID", "Marka"]
+    table.columns.alignment = BeautifulTable.ALIGN_LEFT
+    con.close()
+    for i in data:
+        table.rows.append([i[0],i[1]])
+    return(table)
+
+def show_FuelCarBrands():
+    con = sqlite3.connect("car.db")
+    cursor = con.cursor()
+    cursor.execute("SELECT * FROM FuelCarBrands")
+    data = cursor.fetchall()
+    table = BeautifulTable()
+    table.set_style(BeautifulTable.STYLE_COMPACT)
+    table.columns.header = ["ID", "Marka"]
+    table.columns.alignment = BeautifulTable.ALIGN_LEFT
+    con.close()
+    for i in data:
+        table.rows.append([i[0],i[1]])
+    return(table)
+
+def show_HybridCarBrands():
+    con = sqlite3.connect("car.db")
+    cursor = con.cursor()
+    cursor.execute("SELECT * FROM HybridCarBrands")
+    data = cursor.fetchall()
+    table = BeautifulTable()
+    table.set_style(BeautifulTable.STYLE_COMPACT)
+    table.columns.header = ["ID", "Marka"]
+    table.columns.alignment = BeautifulTable.ALIGN_LEFT
+    con.close()
+    for i in data:
+        table.rows.append([i[0],i[1]])
+    return(table)
 
 def under_construction():
     print(f"\n Bu modül yapım aşamasındadır.")
@@ -447,8 +563,6 @@ while True:
                 print(f"\n{'':-^{tbl_len_out}}")
                 if menu_bottom() == "break": break
 
-        # if menu_bottom() == "break": break
-
     # [21] Araç bilgisi
     elif inp_mainmenu == "21":
         clear()
@@ -467,22 +581,147 @@ while True:
         elif inp_menu21 == "1":
             clear()
             print(menu_title())
-            print(f"\n Görüntülemek istediğiniz araç markasını seçiniz.\n")
-            print(menu_car_brands())
+            print(f"\n Görüntülemek istediğiniz araç ID'sini seçiniz.\n")
+            print(show_ElectricCarBrands())
             print(f"\n{'':-^{tbl_len_out}}")
-            if menu_bottom() == "break": break
+            inp_menu211 = input(f"\n [A] Ana menüye dön | [Q] Programdan Çık | Tercih: ")
+            try:
+                menu211 = int(inp_menu211)
+                if menu211 in range(1,(calc_row_number("ElectricCarBrands") + 1)):
+                    car_brand = find_electric_car_brand(inp_menu211)
+                    clear()
+                    print(menu_title())
+                    print(f"\n Görüntülemek istediğiniz araç modelini seçiniz.\n")
+                    print(menu_car_electric_models(car_brand))
+                    print(f"\n{'':-^{tbl_len_out}}")
+                    inp_menu2111 = input(f"\n [A] Ana menüye dön | [Q] Programdan Çık | Tercih: ")
+                    try:
+                        menu2111 = int(inp_menu2111)
+                        if menu2111 in range(1,(calc_row_number("ElectricCar") + 1)):
+                            car_data = find_electric_car(inp_menu2111)
+                            clear()
+                            print(menu_title())
+                            print(f"\n {'Marka':{tbl_len_car}}: {car_data[1]}")
+                            print(f" {'Model':{tbl_len_car}}: {car_data[2]}")
+                            print(f" {'Motor':{tbl_len_car}}: {car_data[3]}")
+                            print(f" {'Model yılı':{tbl_len_car}}: {car_data[4]}")
+                            print(f"\n {'Batarya Kapasitesi':{tbl_len_car}}: {car_data[5]} kWh")
+                            print(f" {'Kullanılabilir Kapasite':{tbl_len_car}}: {car_data[6]} kWh")
+                            print(f"\n {'23°C Hava Sıcaklığında':{tbl_len_car}}  Menzil")
+                            print(f" {'':-^{tbl_len_car}}  {'':-^{13}}")
+                            print(f" {'Fabrika Menzili Şehiriçi':{tbl_len_car}}: {car_data[7]}km")
+                            print(f" {'Fabrika Menzili Şehirdışı':{tbl_len_car}}: {car_data[8]}km")
+                            print(f" {'Fabrika Menzili Karma':{tbl_len_car}}: {car_data[9]}km")
+                            print(f" {'Kullanıcı Menzili Şehiriçi':{tbl_len_car}}: {car_data[10]}km")
+                            print(f" {'Kullanıcı Menzili Şehirdışı':{tbl_len_car}}: {car_data[11]}km")
+                            print(f" {'Kullanıcı Menzili Karma':{tbl_len_car}}: {car_data[12]}km")
+                            print(f"\n{'':-^{tbl_len_out}}")
+                            if menu_bottom() == "break": break
+
+                    except:
+                        if inp_menu2111.lower() == "q":
+                            print(f"\n{' İyi Günler ':=^{tbl_len_out}}\n")
+                            break
+                        elif inp_menu2111.lower() == "a":
+                            continue
+                        else:
+                            clear()
+                            print(menu_title())
+                            menu_error(inp_menu2111)
+                            print(f"\n{'':-^{tbl_len_out}}")
+                            if menu_bottom() == "break": break
+                    # if menu_bottom() == "break": break
+            except:
+                if inp_menu211.lower() == "q":
+                    print(f"\n{' İyi Günler ':=^{tbl_len_out}}\n")
+                    break
+                elif inp_menu211.lower() == "a":
+                    continue
+                else:
+                    clear()
+                    print(menu_title())
+                    menu_error(inp_menu211)
+                    print(f"\n{'':-^{tbl_len_out}}")
+                    if menu_bottom() == "break": break
+
+        # !!!
         elif inp_menu21 == "2":
             clear()
             print(menu_title())
-            under_construction()
+            print(f"\n Görüntülemek istediğiniz araç ID'sini seçiniz.\n")
+            print(show_HybridCarBrands())
             print(f"\n{'':-^{tbl_len_out}}")
-            if menu_bottom() == "break": break
+            inp_menu213 = input(f"\n [A] Ana menüye dön | [Q] Programdan Çık | Tercih: ")
+
         elif inp_menu21 == "3":
             clear()
             print(menu_title())
-            under_construction()
+            print(f"\n Görüntülemek istediğiniz araç ID'sini seçiniz.\n")
+            print(show_FuelCarBrands())
             print(f"\n{'':-^{tbl_len_out}}")
-            if menu_bottom() == "break": break
+            inp_menu213 = input(f"\n [A] Ana menüye dön | [Q] Programdan Çık | Tercih: ")
+            try:
+                menu213 = int(inp_menu213)
+                if menu213 in range(1,(calc_row_number("FuelCarBrands") + 1)):
+                    car_brand = find_fuel_car_brand(inp_menu213)
+                    clear()
+                    print(menu_title())
+                    print(f"\n Görüntülemek istediğiniz araç modelini seçiniz.\n")
+                    print(menu_car_fuel_models(car_brand))
+                    print(f"\n{'':-^{tbl_len_out}}")
+                    inp_menu2131 = input(f"\n [A] Ana menüye dön | [Q] Programdan Çık | Tercih: ")
+                    try:
+                        menu2131 = int(inp_menu2131)
+                        if menu2131 in range(1,(calc_row_number("FuelCar") + 1)):
+                            car_data = find_fuel_car(inp_menu2131)
+                            clear()
+                            print(menu_title())
+                            print(f"\n {'Marka':{tbl_len_car}}: {car_data[1]}")
+                            print(f" {'Model':{tbl_len_car}}: {car_data[2]}")
+                            print(f" {'Motor':{tbl_len_car}}: {car_data[3]}")
+                            print(f" {'Model yılı':{tbl_len_car}}: {car_data[4]}")
+                            print(f"\n {'Motor hacmi':{tbl_len_car}}: {car_data[5]} cc")
+                            print(f" {'Motor gücü':{tbl_len_car}}: {car_data[6]}")
+                            print(f" {'Yakıt Tipi':{tbl_len_car}}: {car_data[7]}")
+                            print(f" {'Akaryakıt depo hacmi':{tbl_len_car}}: {car_data[8]} lt")
+                            # print(f"\n {'Tam Depo Dolum Ücreti':{tbl_len_car}}: {fuel_cost} ₺")
+                            print(f"\n {'23°C Hava Sıcaklığında':{tbl_len_car}}  Yakıt Tük.")
+                            print(f" {'':-^{tbl_len_car}}  {'':-^{13}}")
+                            print(f" {'Fabrika Menzili Şehiriçi':{tbl_len_car}}: {car_data[9]} l/100km")
+                            print(f" {'Fabrika Menzili Şehirdışı':{tbl_len_car}}: {car_data[10]} l/100km")
+                            print(f" {'Fabrika Menzili Karma':{tbl_len_car}}: {car_data[11]} l/100km")
+                            # print(f" {'Kullanıcı Menzili Şehiriçi':{tbl_len_car}}: {car_data[10]}km\t{round(cost_charge100/car_data[10],2)} ₺")
+                            # print(f" {'Kullanıcı Menzili Şehirdışı':{tbl_len_car}}: {car_data[11]}km\t{round(cost_charge100/car_data[11],2)} ₺")
+                            print(f" {'Kullanıcı Menzili Karma':{tbl_len_car}}: {car_data[14]} l/100km")
+                            print(f"\n{'':-^{tbl_len_out}}")
+                            if menu_bottom() == "break": break
+
+                    except:
+                        if inp_menu2131.lower() == "q":
+                            print(f"\n{' İyi Günler ':=^{tbl_len_out}}\n")
+                            break
+                        elif inp_menu2131.lower() == "a":
+                            continue
+                        else:
+                            clear()
+                            print(menu_title())
+                            menu_error(inp_menu2131)
+                            print(f"\n{'':-^{tbl_len_out}}")
+                            if menu_bottom() == "break": break
+                    # if menu_bottom() == "break": break
+            except:
+                if inp_menu213.lower() == "q":
+                    print(f"\n{' İyi Günler ':=^{tbl_len_out}}\n")
+                    break
+                elif inp_menu213.lower() == "a":
+                    continue
+                else:
+                    clear()
+                    print(menu_title())
+                    menu_error(inp_menu213)
+                    print(f"\n{'':-^{tbl_len_out}}")
+                    if menu_bottom() == "break": break
+
         else:
             clear()
             print(menu_title())
