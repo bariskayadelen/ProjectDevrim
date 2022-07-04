@@ -44,6 +44,9 @@ def clear():
     else:
         _ = system('clear')
 
+def menu_title():
+    return (f"\n{' Araç Enerji Tüketimi Hesaplama Programı ':=^{tbl_len_out}}")
+
 # Table Width
 tbl_len_out = 72
 tbl_len_in = 18
@@ -85,36 +88,39 @@ tbl_len_car = 25
 # url = "https://ev-database.org/car/1319/Dacia-Spring-Electric"
 # car_data = url_hunter(url)
 
-# clear()
-print(f"\n{' URL Data Hunter':=^{tbl_len_out}}")
-inp_url = input(f"\n{' URL Kaynağı':<{25}} : ")
 # print(f"{' Tarih':<{tbl_len_in}} : {today}")
 # print(f"{' Zaman':<{tbl_len_in}} : {time}")
 # print(url_hunter(url))
 
-car_data = url_hunter(inp_url)
-print(f"\n{'':-^{tbl_len_out}}")
-print(f"\n {'Marka':{tbl_len_car}}: {car_data[0]}")
-print(f" {'Model':{tbl_len_car}}: {car_data[1]}")
-print(f" {'Model yılı':{tbl_len_car}}: 2022")
-print(f" {'Motor Gücü':{tbl_len_car}}: {car_data[2]} kW")
-print(f" {'Tork':{tbl_len_car}}: {car_data[3]} Nm")
-
-print(f"\n {'Batarya Kapasitesi':{tbl_len_car}}: {car_data[4]} kWh")
-print(f" {'Kullanılabilir Kapasite':{tbl_len_car}}: {car_data[5]} kWh")
-
-print(f"\n {'WLTP Menzili':{tbl_len_car}}: {car_data[6]} km")
-
-print(f"\n {'-10°C Hava Sıcaklığında':{tbl_len_car}}  Menzil (Klima açık)")
-print(f" {'':-^{tbl_len_car}}  {'':-^{10}}")
-print(f" {'Şehiriçi Menzili':{tbl_len_car}}: {car_data[7]} km")
-print(f" {'Şehirdışı Menzili':{tbl_len_car}}: {car_data[8]} km")
-print(f" {'Karma Menzili':{tbl_len_car}}: {car_data[9]} km")
-
-print(f"\n {'23°C Hava Sıcaklığında':{tbl_len_car}}  Menzil (Klima kapalı)")
-print(f" {'':-^{tbl_len_car}}  {'':-^{10}}")
-print(f" {'Şehiriçi Menzili':{tbl_len_car}}: {car_data[10]} km")
-print(f" {'Şehirdışı Menzili':{tbl_len_car}}: {car_data[11]} km")
-print(f" {'Karma Menzili':{tbl_len_car}}: {car_data[12]} km")
-
-print(f"\n{'':=^{tbl_len_out}}\n")
+while True:
+    clear()
+    print(menu_title())
+    inp_url = input(f"\n{' URL Kaynağı':<{25}} : ")
+    clear()
+    car_data = url_hunter(inp_url)
+    print(menu_title())
+    print(f"\n {'Marka':{tbl_len_car}}: {car_data[0]}")
+    print(f" {'Model':{tbl_len_car}}: {car_data[1]}")
+    print(f" {'Model yılı':{tbl_len_car}}: 2022")
+    print(f" {'Motor Gücü':{tbl_len_car}}: {car_data[2]} kW")
+    print(f" {'Tork':{tbl_len_car}}: {car_data[3]} Nm")
+    print(f"\n {'Batarya Kapasitesi':{tbl_len_car}}: {car_data[4]} kWh")
+    print(f" {'Kullanılabilir Kapasite':{tbl_len_car}}: {car_data[5]} kWh")
+    print(f"\n {'WLTP Menzili':{tbl_len_car}}: {car_data[6]} km")
+    print(f"\n {'-10°C Hava Sıcaklığında':{tbl_len_car}}  Menzil (Klima açık)")
+    print(f" {'':-^{tbl_len_car}}  {'':-^{10}}")
+    print(f" {'Şehiriçi Menzili':{tbl_len_car}}: {car_data[7]} km")
+    print(f" {'Şehirdışı Menzili':{tbl_len_car}}: {car_data[8]} km")
+    print(f" {'Karma Menzili':{tbl_len_car}}: {car_data[9]} km")
+    print(f"\n {'23°C Hava Sıcaklığında':{tbl_len_car}}  Menzil (Klima kapalı)")
+    print(f" {'':-^{tbl_len_car}}  {'':-^{10}}")
+    print(f" {'Şehiriçi Menzili':{tbl_len_car}}: {car_data[10]} km")
+    print(f" {'Şehirdışı Menzili':{tbl_len_car}}: {car_data[11]} km")
+    print(f" {'Karma Menzili':{tbl_len_car}}: {car_data[12]} km")
+    print(f"\n{'':-^{tbl_len_out}}")
+    inp_mainmenu = input(f"\n[Q] Programdan Çık | [W] Veritabanına Kaydet | Tercih: ")
+    if inp_mainmenu.lower() == "q":
+        print(f"\n{' İyi Günler ':=^{tbl_len_out}}\n")
+        break
+    else:
+        continue
