@@ -338,7 +338,7 @@ def show_current_FuelTr():
 def show_all_FuelTr():
     con = sqlite3.connect("unitprices.db")
     cursor = con.cursor()
-    cursor.execute("SELECT * FROM FuelTr")
+    cursor.execute("SELECT * FROM FuelTr ORDER BY Date DESC LIMIT 15")
     data = cursor.fetchall()
     table = BeautifulTable()
     table.set_style(BeautifulTable.STYLE_COMPACT)
