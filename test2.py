@@ -15,6 +15,8 @@ data = {"city": "ANKARA",
 response = requests.post(post_url, data=data)
 print(response.status_code)
 # print()
+
+
 # soup=BeautifulSoup(response.content,"html.parser")
 # print(soup)
 
