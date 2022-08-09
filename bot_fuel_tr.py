@@ -36,4 +36,8 @@ fuel_price = page_soup.find_all('div', {"class":"fuel-price"})[0].text.strip().s
 diesel_price = page_soup.find_all('div', {"class":"fuel-price"})[1].text.strip().strip('TL/LT')
 lpg_price = page_soup.find_all('div', {"class":"fuel-price"})[3].text.strip().strip('TL/LT')
 
-FuelTr_update(today,company,fuel_price,diesel_price,lpg_price)
+def main():
+    FuelTr_update(today,company,fuel_price,diesel_price,lpg_price)
+
+if __name__ == "__main__":
+    main()
