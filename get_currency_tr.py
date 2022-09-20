@@ -1,5 +1,5 @@
 from datetime import datetime
-import urllib.request
+import requests
 from bs4 import BeautifulSoup as soup
 
 currency_list = {
@@ -16,14 +16,12 @@ currency_list = {
     "SEK": "ctl00_ctl18_g_6e26f0d7_7521_4191_b169_6f6bb7e95edc_ctl00_FxRatesRepeater_ctl10_fxItem",
     "CHF": "ctl00_ctl18_g_6e26f0d7_7521_4191_b169_6f6bb7e95edc_ctl00_FxRatesRepeater_ctl11_fxItem"}
 
-url = "https://www.isbank.com.tr/en/foreign-exchange-rates"
 company = "Türkiye İş Bankası"
-req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'})
-uClient = urllib.request.urlopen(req)
-page_html = uClient.read()
-uClient.close()
+url = "https://www.isbank.com.tr/en/foreign-exchange-rates"
+header = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 
-page_soup = soup(page_html.decode('utf-8','ignore').encode("utf-8"), 'html5lib')
+req = requests.get(url, headers=header)
+page_soup = soup(req.content.decode('utf-8','ignore').encode("utf-8"), 'html5lib')
 table_currency = {}
 
 for (key, val) in currency_list.items():

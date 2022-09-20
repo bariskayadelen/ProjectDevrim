@@ -1,7 +1,7 @@
 # Fuel Price Watcher Script
 
 import datetime
-import urllib.request
+import requests
 from bs4 import BeautifulSoup as soup
 import sqlite3
 
@@ -23,15 +23,18 @@ def FuelTr_update(date,comp,fuel,diesel,lpg):
     con.close()
 
 today = str(datetime.date.today())
-url = "https://www.aytemiz.com.tr/"
 company = "Aytemiz Petrol"
+url = "https://www.aytemiz.com.tr/"
+header = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 
-req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'})
-uClient = urllib.request.urlopen(req)
-page_html = uClient.read()
-uClient.close()
+req = requests.get(url, headers=header)
+page_soup = soup(req.content.decode('utf-8','ignore').encode("utf-8"), 'html5lib')
+fuel_price = page_soup.find_all('div', {"class":"fuel-price"})[0].text.strip().strip('TL/LT')
+diesel_price = page_soup.find_all('div', {"class":"fuel-price"})[1].text.strip().strip('TL/LT')
+lpg_price = page_soup.find_all('div', {"class":"fuel-price"})[3].text.strip().strip('TL/LT')
 
-page_soup = soup(page_html.decode('utf-8','ignore').encode("utf-8"), 'html5lib')
+req = requests.get(url, headers=header)
+page_soup = soup(req.content.decode('utf-8','ignore').encode("utf-8"), 'html5lib')
 fuel_price = page_soup.find_all('div', {"class":"fuel-price"})[0].text.strip().strip('TL/LT')
 diesel_price = page_soup.find_all('div', {"class":"fuel-price"})[1].text.strip().strip('TL/LT')
 lpg_price = page_soup.find_all('div', {"class":"fuel-price"})[3].text.strip().strip('TL/LT')
