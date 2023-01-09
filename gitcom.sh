@@ -4,7 +4,7 @@
 python3 bot_fuel_tr.py
 
 # Waits 30 seconds.
-sleep 30
+sleep 15
 
 # Add to git repository
 git add .
