@@ -9,4 +9,4 @@ sleep 15
 # Add to git repository
 git add .
 git commit -m "`date +%Y-%m-%d` Fuel Update"
-#git push origin main
+git push origin main
