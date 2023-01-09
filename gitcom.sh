@@ -3,8 +3,8 @@
 # Chek fuel prices
 python3 bot_fuel_tr.py
 
-# Waits 30 seconds.
-sleep 15
+# Waits 10 seconds.
+sleep 10
 
 # Add to git repository
 git add .
