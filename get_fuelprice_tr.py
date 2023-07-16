@@ -1,13 +1,12 @@
-# TURKIYE FUEL PRICE WATCHER
+# GET TURKIYE FUEL PRICE
 
 from datetime import datetime
 import requests
 from bs4 import BeautifulSoup as soup
 
 # Date and Time
-now = datetime.now()
-today = now.strftime("%d/%m/%Y")
-time = now.strftime("%H:%M:%S")
+today = str(datetime.today().strftime('%Y-%m-%d'))
+time = str(datetime.today().strftime("%H:%M:%S"))
 
 fuel_company = "TPAO"
 url = "https://www.tppd.com.tr/en/oil-prices?id=06"
