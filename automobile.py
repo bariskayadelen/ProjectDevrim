@@ -327,10 +327,10 @@ def show_current_FuelTr():
     data = cursor.fetchall()
     table = BeautifulTable()
     table.set_style(BeautifulTable.STYLE_COMPACT)
-    table.columns.header = ["Tarih", "Şirket", "Benzin Fiyatı", "Dizel Fiyatı", "LPG Fiyatı"]
+    table.columns.header = ["Tarih", "Şirket", "Şehir", "Benzin Fiyatı", "Dizel Fiyatı", "LPG Fiyatı"]
     table.columns.alignment = BeautifulTable.ALIGN_LEFT
     for i in data:
-        table.rows.append([i[0],i[1],i[2],i[3],i[4]])
+        table.rows.append([i[0],i[1],i[2],i[3],i[4],i[5]])
     print(table)
     con.close()
 
@@ -342,10 +342,10 @@ def show_all_FuelTr():
     data = cursor.fetchall()
     table = BeautifulTable()
     table.set_style(BeautifulTable.STYLE_COMPACT)
-    table.columns.header = ["Tarih", "Şirket", "Benzin Fiyatı", "Dizel Fiyatı", "LPG Fiyatı"]
+    table.columns.header = ["Tarih", "Şirket", "Şehir", "Benzin Fiyatı", "Dizel Fiyatı", "LPG Fiyatı"]
     table.columns.alignment = BeautifulTable.ALIGN_LEFT
     for i in data:
-        table.rows.append([i[0],i[1],i[2],i[3],i[4]])
+        table.rows.append([i[0],i[1],i[2],i[3],i[4],i[5]])
     print(table)
     con.close()
 
