@@ -7,7 +7,7 @@ import sqlite3
 # now = datetime.now()
 today = str(datetime.today().strftime('%Y-%m-%d'))
 
-def FuelTr_update(today,comp,fuel,diesel,lpg):
+def FuelTr_update(today,comp,dist,fuel,diesel,lpg):
     con = sqlite3.connect("unitprices.db")
     cursor = con.cursor()
     cursor.execute("CREATE TABLE IF NOT EXISTS FuelTr(Date TEXT,CompanyName TEXT,District TEXT,GasPrice REAL,Diesel REAL,LPG REAL)")
@@ -17,8 +17,8 @@ def FuelTr_update(today,comp,fuel,diesel,lpg):
     if data == today:
         print ("Bugün için veri girişi yapılmış.")
     else:
-        insert_with_param = """INSERT INTO FuelTr (Date,CompanyName,District, GasPrice,Diesel,LPG) VALUES (?, ?, ?, ?, ?);"""
-        data_tuple = (today,comp,fuel,diesel,lpg)
+        insert_with_param = """INSERT INTO FuelTr (Date,CompanyName,District,GasPrice,Diesel,LPG) VALUES (?, ?, ?, ?, ?, ?);"""
+        data_tuple = (today,comp,dist,fuel,diesel,lpg)
         cursor.execute(insert_with_param, data_tuple)
         con.commit()
         print ("Yeni veri girişi yapıldı.")
