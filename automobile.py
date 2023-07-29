@@ -149,11 +149,11 @@ def calc_fuel_cost(fuel_type,tank_size):
     data = cursor.fetchall()
     for i in data:
         if fuel_type == "Benzin":
-            return(int(i[2]) * tank_size)
-        elif fuel_type == "Diesel":
             return(int(i[3]) * tank_size)
-        elif fuel_type == "LPG":
+        elif fuel_type == "Diesel":
             return(int(i[4]) * tank_size)
+        elif fuel_type == "LPG":
+            return(int(i[5]) * tank_size)
         else:
             return None
     con.close()
@@ -165,11 +165,11 @@ def calc_fuel_cost_per_km(fuel_type,consumption):
     data = cursor.fetchall()
     for i in data:
         if fuel_type == "Benzin":
-            return(int(i[2]) * consumption / 100)
-        elif fuel_type == "Diesel":
             return(int(i[3]) * consumption / 100)
-        elif fuel_type == "LPG":
+        elif fuel_type == "Diesel":
             return(int(i[4]) * consumption / 100)
+        elif fuel_type == "LPG":
+            return(int(i[5]) * consumption / 100)
         else:
             return None
     con.close()

@@ -1,42 +1,25 @@
-# TURKIYE FUEL PRICE WATCHER
-
-import datetime
-import requests
-from bs4 import BeautifulSoup as soup
+# Import system and name from os for clear function
+from os import system, name
 import sqlite3
+from beautifultable import BeautifulTable
 
-def FuelTr_update(date,comp,dist,fuel,diesel,lpg):
+def calc_fuel_cost(fuel_type,tank_size):
     con = sqlite3.connect("unitprices.db")
     cursor = con.cursor()
-    cursor.execute("CREATE TABLE IF NOT EXISTS FuelTr(Date TEXT,CompanyName TEXT, District TEXT, GasPrice REAL,Diesel REAL,LPG REAL)")
-    con.commit()
-    data = cursor.execute("SELECT * FROM FuelTr ORDER BY Date DESC LIMIT 1")
-    data = cursor.fetchone()[0]
-
-    if data == date:
-        print ("Bugün için veri girişi yapılmış.")
-    else:
-        insert_with_param = """INSERT INTO FuelTr (Date,CompanyName,District,GasPrice,Diesel,LPG) VALUES (?, ?, ?, ?, ?, ?);"""
-        data_tuple = (date,comp,dist,fuel,diesel,lpg)
-        cursor.execute(insert_with_param, data_tuple)
-        con.commit()
-        print ("Yeni veri girişi yapıldı.")
+    cursor.execute("SELECT * FROM FuelTr ORDER BY Date DESC LIMIT 1")
+    data = cursor.fetchall()
+    for i in data:
+        if fuel_type == "Benzin":
+            return(int(i[2]) * tank_size)
+        elif fuel_type == "Diesel":
+            return(int(i[3]) * tank_size)
+        elif fuel_type == "LPG":
+            return(int(i[4]) * tank_size)
+        else:
+            return None
     con.close()
 
-today = str(datetime.date.today())
-company = "TPAO"
-url = "https://www.tppd.com.tr/en/oil-prices?id=06"
-header = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+fuel_cost = calc_fuel_cost("Benzin",54.0)
 
-req = requests.get(url, headers=header)
-page_soup = soup(req.content.decode('utf-8','ignore').encode("utf-8"), 'html5lib')
-district = page_soup.find_all('td', {"data-title":"DISTRICT"})[0].text.strip()
-fuel_price = page_soup.find_all('td', {"data-title":"UNLEADED GASOLINE (TL/LT)"})[0].text.strip()
-diesel_price = page_soup.find_all('td', {"data-title":"TP DIESEL (TL/LT)"})[0].text.strip()
-lpg_price = page_soup.find_all('td', {"data-title":"TPGAS"})[0].text.strip()
+print(fuel_cost)
 
-def main():
-    FuelTr_update(today,company,district,fuel_price,diesel_price,lpg_price)
-
-if __name__ == "__main__":
-    main()
