@@ -1,6 +1,5 @@
 # Import system and name from os for clear function
 from os import system, name
-# import sqlite3
 # from beautifultable import BeautifulTable
 from bs4 import BeautifulSoup as soup
 from datetime import datetime
