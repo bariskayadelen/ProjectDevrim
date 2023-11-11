@@ -1,7 +1,8 @@
 #! /bin/bash
 
 # Check fuel prices
-cd /root/ProjectDevrim/
+# cd /root/ProjectDevrim/
+cd /Users/baris/Library/Mobile\ Documents/com~apple~CloudDocs/GitHub/ProjectDevrim/
 python3 bot_fuel_tr.py
 
 # Waits 7 seconds.
